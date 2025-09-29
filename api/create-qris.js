@@ -8,17 +8,14 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // parse body (Vercel butuh manual parse)
-    const chunks = []
-    for await (const chunk of req) {
-      chunks.push(chunk)
-    }
-    const bodyStr = Buffer.concat(chunks).toString()
-    const body = JSON.parse(bodyStr || "{}")
+    // di Vercel, body sudah otomatis di-parse
+    const { productKey, username, nomor } = req.body || {}
 
-    const { productKey, username, nomor } = body
     if (!productKey || !username || !nomor) {
-      return res.status(400).json({ ok: false, error: "Missing productKey, username, or nomor" })
+      return res.status(400).json({
+        ok: false,
+        error: "Missing productKey, username, or nomor"
+      })
     }
 
     const pkg = PACKAGES[productKey]
@@ -60,4 +57,4 @@ module.exports = async (req, res) => {
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message })
   }
-      }
+  }
