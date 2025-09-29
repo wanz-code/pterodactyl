@@ -193,43 +193,48 @@ module.exports = async (req, res) => {
         return res.status(500).json({ ok: false, error: 'Server misconfigured: LICENSE_KEY missing' });
       }
 
-      // build payload for Cashify
-      const payload = {
-        id: config.qrisStaticId,
-        amount: pkg.price,
-        useUniqueCode: true,
-        expiredInMinutes: Number(body.expiredInMinutes || config.DEFAULT_QRIS_EXPIRE_MINUTES),
-        metadata: { username, nomor, product: productKey }
-      };
+     // build payload for Cashify
+const payload = {
+  id: config.qrisStaticId,                           // static id dari config
+  amount: pkg.price,                                 // harga paket
+  useUniqueCode: true,                               // selalu unik nominal
+  packageIds: ["com.orderkuota.app"],                // fix: wallet target
+  expiredInMinutes: config.DEFAULT_QRIS_EXPIRE_MINUTES, // default 15 menit
+  metadata: { username, nomor, product: productKey } // info tambahan
+};
 
-      // allow packageIds override (for wallet selection)
-      if (packageIds) {
-        payload.packageIds = Array.isArray(packageIds) ? packageIds : [packageIds];
-      }
+logDebug('create-qris payload', payload);
 
-      logDebug('create-qris payload', payload);
+// call Cashify
+let resp;
+try {
+  resp = await fetchWithRetries(config.qrisEndpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-license-key': config.licenseKey
+    },
+    body: JSON.stringify(payload)
+  }, { timeoutMs: 15000, retries: 2, retryDelayMs: 500 });
+} catch (err) {
+  console.error('Cashify generate error:', err && err.message);
+  return res.status(502).json({
+    ok: false,
+    error: 'Cashify generate request failed',
+    details: err.message
+  });
+}
 
-      // call Cashify
-      let resp;
-      try {
-        resp = await fetchWithRetries(config.qrisEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-license-key': config.licenseKey
-          },
-          body: JSON.stringify(payload)
-        }, { timeoutMs: 15000, retries: 2, retryDelayMs: 500 });
-      } catch (err) {
-        console.error('Cashify generate error:', err && err.message);
-        return res.status(502).json({ ok: false, error: 'Cashify generate request failed', details: err.message });
-      }
-
-      const parsed = await safeParseResponse(resp);
-      if (!resp.ok) {
-        // forward response body if available
-        return res.status(502).json({ ok: false, error: 'Cashify error', status: resp.status, details: parsed.body || parsed.error });
-      }
+const parsed = await safeParseResponse(resp);
+if (!resp.ok) {
+  // forward response body if available
+  return res.status(502).json({
+    ok: false,
+    error: 'Cashify error',
+    status: resp.status,
+    details: parsed.body || parsed.error
+  });
+}
 
       const rawData = parsed.body || {};
       const data = rawData.data || rawData; // some APIs respond with { data: { ... } }
