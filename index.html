@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Wanz Panel Store</title>
+<style>
+  :root{--bg:#05060a;--card:#0c0f18;--muted:#9aa0b0;--accent:#7b61ff;--accent2:#00ffd1}
+  *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#020214,#071020);color:#eaf3ff}
+  .app{max-width:980px;margin:20px auto;padding:16px}
+  header{display:flex;align-items:center;justify-content:space-between}
+  .logo{display:flex;gap:12px;align-items:center}
+  .logo .badge{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#081018}
+  h1{margin:0;font-size:18px}
+  .sub{color:var(--muted);font-size:13px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+  .card h3{margin:0 0 6px 0}
+  .price{font-weight:800;color:var(--accent2)}
+  .muted{color:var(--muted);font-size:13px}
+  .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#071018;padding:8px 10px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .detail{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:60;padding:12px}
+  .detail.open{display:flex}
+  .detailCard{width:100%;max-width:760px;background:linear-gradient(180deg,#071022,#0b0f1c);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .specs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  input,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#eaf3ff}
+  .qrBox{margin-top:12px;background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;text-align:center}
+  img.qr{width:220px;height:220px;border-radius:8px}
+  .toast{position:fixed;right:18px;top:18px;z-index:90}
+  .notif{min-width:220px;padding:10px 12px;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#061018;font-weight:700}
+  footer{margin-top:18px;color:var(--muted);text-align:center;font-size:13px}
+  @media (max-width:880px){.grid{grid-template-columns:repeat(1,1fr)}.qr {width:160px;height:160px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><div class="badge">WZ</div><div><h1>Wanz Panel Store</h1><div class="sub">Simple checkout • Mobile friendly</div></div></div>
+    <div><button id="btnHistory" class="btn">History</button></div>
+  </header>
+
+  <main>
+    <h2 style="margin-top:14px">Produk</h2>
+    <div id="grid" class="grid"></div>
+  </main>
+
+  <footer>Wanz Official • Deploy ke Vercel — pastikan env vars terpasang</footer>
+</div>
+
+<!-- detail modal -->
+<div id="detail" class="detail" aria-hidden="true">
+  <div class="detailCard">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <h3 id="dTitle">Panel</h3>
+        <div id="dSubtitle" class="muted">Spesifikasi</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button id="closeDetail" class="btn">Tutup</button>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="specs" id="dSpecs"></div>
+
+      <div style="margin-top:12px">
+        <label>Username server</label><br/>
+        <input id="inputUser" placeholder="username (3-15)" />
+      </div>
+      <div style="margin-top:8px">
+        <label>Nomor (628...)</label><br/>
+        <input id="inputNomor" placeholder="628..." />
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+        <button id="btnBuy" class="btn">Buat QRIS & Tampilkan</button>
+        <div id="statusHint" class="muted" style="margin-left:8px"></div>
+      </div>
+
+      <div id="qrWrap" class="qrBox" style="display:none">
+        <div id="qrInfo" class="muted small"></div>
+        <img id="qrImg" class="qr" src="" alt="QRIS" />
+        <div style="margin-top:8px;display:flex;gap:8px;justify-content:center">
+          <button id="btnCancel" class="btn" style="background:#ff7b7b">Cancel</button>
+          <button id="btnCheck" class="btn">Cek Sekali</button>
+        </div>
+        <div id="panelResult" style="margin-top:8px" class="muted"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- notification -->
+<div class="toast" id="toastRoot" style="display:none"><div class="notif" id="toastText"></div></div>
+
+<script>
+/* ---------- frontend JS ---------- */
+const PACKAGES = {
+  "1gb": { ram: 1024, disk: 1024, cpu: 100, name: "1 GB", price: 1 },
+  "2gb": { ram: 2048, disk: 2048, cpu: 100, name: "2 GB", price: 20000 },
+  "3gb": { ram: 3072, disk: 3072, cpu: 100, name: "3 GB", price: 30000 },
+  "unlimited": { ram:0,disk:0,cpu:0,name:"Unlimited",price:150000},
+  "reseller": { ram:0,disk:0,cpu:0,name:"RESELLER",price:250000}
+}
+
+const grid = document.getElementById('grid')
+const detail = document.getElementById('detail')
+const dTitle = document.getElementById('dTitle')
+const dSubtitle = document.getElementById('dSubtitle')
+const dSpecs = document.getElementById('dSpecs')
+const inputUser = document.getElementById('inputUser')
+const inputNomor = document.getElementById('inputNomor')
+const btnBuy = document.getElementById('btnBuy')
+const btnCancel = document.getElementById('btnCancel')
+const btnCheck = document.getElementById('btnCheck')
+const qrWrap = document.getElementById('qrWrap')
+const qrImg = document.getElementById('qrImg')
+const qrInfo = document.getElementById('qrInfo')
+const panelResult = document.getElementById('panelResult')
+const closeDetail = document.getElementById('closeDetail')
+const toastRoot = document.getElementById('toastRoot')
+const toastText = document.getElementById('toastText')
+const statusHint = document.getElementById('statusHint')
+
+let current = null
+let polling = null
+
+function toast(msg, t=3500) {
+  toastText.textContent = msg
+  toastRoot.style.display = 'block'
+  setTimeout(()=> { toastRoot.style.display = 'none' }, t)
+}
+
+function fmtRp(n){ return 'Rp'+Number(n).toLocaleString('id-ID') }
+function fmtWIB(iso){ try { return new Date(iso).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}) } catch(e) { return iso } }
+
+function renderProducts(){
+  grid.innerHTML = ''
+  Object.keys(PACKAGES).forEach(k=>{
+    const p = PACKAGES[k]
+    const card = document.createElement('div'); card.className='card'
+    card.innerHTML = `<h3>${p.name}</h3><div class="muted">${p.ram? p.ram+' MB RAM':''} ${p.disk? ' • '+p.disk+' MB':''}</div><div style="display:flex;justify-content:space-between;margin-top:10px"><div><div class="price">${fmtRp(p.price)}</div><div class="muted">CPU: ${p.cpu||'-'}</div></div><div><button class="btn" data-key="${k}">Detail</button></div></div>`
+    grid.appendChild(card)
+  })
+  grid.querySelectorAll('button.btn').forEach(b=> b.addEventListener('click', e=>{
+    const k = e.currentTarget.dataset.key
+    openDetail(k)
+  }))
+}
+
+function openDetail(key){
+  const p = PACKAGES[key]
+  current = { key, pkg: p, trxId: null }
+  dTitle.textContent = p.name
+  dSubtitle.textContent = `${p.ram? p.ram+' MB RAM • ':''}${p.disk? p.disk+' MB Disk • ':''}${p.cpu? p.cpu+' CPU':''}`
+  dSpecs.innerHTML = `<div class="muted">Harga: ${fmtRp(p.price)}</div>`
+  inputUser.value = ''
+  inputNomor.value = ''
+  qrWrap.style.display='none'
+  panelResult.textContent = ''
+  statusHint.textContent = ''
+  detail.classList.add('open')
+}
+
+closeDetail.addEventListener('click', ()=> detail.classList.remove('open'))
+
+// create QRIS
+btnBuy.addEventListener('click', async ()=>{
+  if (!current) return
+  const username = inputUser.value.trim()
+  const nomor = inputNomor.value.trim()
+  if (!/^[a-zA-Z0-9_]{3,15}$/.test(username)) { toast('Username invalid (3-15 chars)',4000); return }
+  if (!/^[0-9]{8,15}$/.test(nomor)) { toast('Nomor invalid (628...)',4000); return }
+
+  try {
+    toast('Membuat QRIS...')
+    const r = await fetch(`/api/database?action=create-qris`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ productKey: current.key, username, nomor })
+    })
+    const j = await r.json()
+    if (!j.ok) { toast('Gagal membuat QRIS: '+(j.error||'unknown'),5000); return }
+
+    const q = j.qris
+    current.trxId = q.transactionId || q.raw?.data?.transactionId || null
+    // show QR image if returned
+    if (q.qr_image) {
+      qrImg.src = q.qr_image
+      qrImg.style.display='block'
+      qrInfo.innerHTML = `Nominal: ${fmtRp(q.totalAmount)} • Exp: ${fmtWIB(q.expiredAt)}`
+    } else if (q.qr_string) {
+      // if image not returned, show raw string so user can copy or use external QR generator
+      qrImg.style.display='none'
+      qrInfo.innerHTML = `QR string tersedia (salin jika perlu). Trx: ${current.trxId}`
+    } else {
+      qrImg.style.display='none'
+      qrInfo.innerHTML = `QR dibuat. Trx: ${current.trxId}`
+    }
+    qrWrap.style.display='block'
+    panelResult.textContent = ''
+    startPolling() // auto-polling until paid/expired
+  } catch (err) {
+    toast('Error create QRIS: '+err.message,5000)
+  }
+})
+
+// manual check
+btnCheck.addEventListener('click', async ()=>{
+  await checkStatusOnce()
+})
+
+// cancel
+btnCancel.addEventListener('click', ()=>{
+  stopPolling()
+  qrWrap.style.display='none'
+  current.trxId = null
+  panelResult.textContent = ''
+  toast('Order dibatalkan (UI)')
+})
+
+// polling
+function startPolling(){
+  stopPolling()
+  polling = setInterval(checkStatusOnce, 6000)
+  statusHint.textContent = 'Polling status...'
+}
+function stopPolling(){ if (polling) { clearInterval(polling); polling = null; statusHint.textContent = '' } }
+
+async function checkStatusOnce(){
+  if (!current || !current.trxId) return
+  try {
+    const r = await fetch(`/api/database?action=check-status`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ transactionId: current.trxId, productKey: current.key, username: inputUser.value.trim(), nomor: inputNomor.value.trim() })
+    })
+    const j = await r.json()
+    if (!j.ok) { toast('Check failed: '+(j.error||'unknown'),5000); return }
+    const status = j.status || (j.raw && j.raw.data && j.raw.data.status) || null
+    if (!status && j.panel) {
+      // if backend already returned panel due to immediate paid+create
+      panelResult.innerHTML = `<div style="font-weight:800;color:#7b61ff">Panel dibuat • ID: ${JSON.stringify(j.panel).slice(0,80)}...</div>`
+      stopPolling()
+      return
+    }
+    if (status === 'paid') {
+      toast('Pembayaran terdeteksi. Membuat panel...')
+      // backend may return panel in the same call when paid
+      if (j.panel) {
+        panelResult.innerHTML = `<div style="font-weight:800;color:#7b61ff">Panel dibuat • ID: ${JSON.stringify(j.panel).slice(0,80)}...</div>`
+        stopPolling()
+      } else {
+        // call check-status which triggers panel creation server-side (it does in our backend)
+        if (j.status === 'paid' && j.panel) {
+          panelResult.innerHTML = `<div style="font-weight:800;color:#7b61ff">Panel dibuat • ID: ${JSON.stringify(j.panel).slice(0,80)}...</div>`
+          stopPolling()
+        } else {
+          // attempt to call check-status once more to trigger create
+          const r2 = await fetch(`/api/database?action=check-status`, {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ transactionId: current.trxId, productKey: current.key, username: inputUser.value.trim(), nomor: inputNomor.value.trim() })
+          })
+          const j2 = await r2.json()
+          if (j2.ok && j2.panel) {
+            panelResult.innerHTML = `<div style="font-weight:800;color:#7b61ff">Panel dibuat • ID: ${JSON.stringify(j2.panel).slice(0,80)}...</div>`
+            stopPolling()
+          } else {
+            toast('Menunggu verifikasi pembayaran...')
+          }
+        }
+      }
+    } else if (status === 'expired') {
+      toast('Order expired',4000)
+      stopPolling()
+    } else {
+      // pending
+    }
+  } catch (e) {
+    // ignore transient network errors but show brief toast
+    console.warn('poll error', e)
+  }
+}
+
+// history modal (uses check-status action not touching files)
+document.getElementById('btnHistory').addEventListener('click', ()=> {
+  toast('History is not persisted (stateless mode). Use admin or external DB for full history)',5000)
+})
+
+renderProducts()
+</script>
+</body>
+</html>
