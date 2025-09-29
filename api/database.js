@@ -63,6 +63,7 @@ module.exports = async (req, res) => {
         id: config.qrisstatis,
         amount: pkg.price,
         useUniqueCode: true,
+        packageId: process.env.PACKAGE_ID || "com.orderkuota.app",
         expiredInMinutes: 15,
         metadata: { username, nomor, product: productKey }
       }
