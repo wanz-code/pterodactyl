@@ -25,7 +25,7 @@ const config = {
   qrisEndpoint: process.env.QRIS_ENDPOINT || "https://cashify.my.id/api/generate/qris",
   qrisCheck: process.env.QRIS_CHECK || "https://cashify.my.id/api/generate/check-status",
   DEFAULT_QRIS_EXPIRE_MINUTES: Number(process.env.QRIS_EXPIRE_MINUTES || 15),
-  DEBUG: (process.env.DEBUG === "1" || process.env.DEBUG === "true") || false,
+  DEBUG: (process.env.DEBUG === "1" || process.env.DEBUG === "true") || true,
 };
 
 /* ====== DAFTAR PAKET ====== */
