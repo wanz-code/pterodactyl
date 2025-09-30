@@ -9,9 +9,7 @@
 ═══════════════════════════════
 */
 
-
-
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const fetch = require('node-fetch');
 const QRCode = require('qrcode');
 const crypto = require('crypto');
 
