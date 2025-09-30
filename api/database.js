@@ -17,9 +17,9 @@ const crypto = require('crypto');
 
 // ----------------------------- CONFIG -----------------------------
 const config = {
-  domain: process.env.DOMAIN || 'https://alwaysmunnzty.zakzz.web.id',
-  apikey: process.env.PTLA || process.env.PTLA || 'ptla_a7aJYRHBYBIdvLljopKF1cWszlfcVFZ5QV294zLWFoY',
-  capikey: process.env.PTLC || process.env.PTLC || 'ptlc_06hiTrwki8ValxA5lKFruxuLryQk7o3Tbadolql5D2h',
+  domain: process.env.DOMAIN || '',
+  apikey: process.env.PTLA || process.env.PTLA || '',
+  capikey: process.env.PTLC || process.env.PTLC || '',
   eggid: process.env.EGGID || '15',
   nestid: process.env.NESTID || '5',
   location: process.env.LOC || '1',
