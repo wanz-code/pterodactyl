@@ -261,8 +261,8 @@ module.exports = async (req, res) => {
 if (action === 'status') {
   try {
     const domain = config.domain || config.DOMAIN || '';
-    const plta   = config.plta   || config.PTLA   || '';
-    const pltc   = config.pltc   || config.PTLC   || '';
+    const plta   = config.apikey   || config.PTLA   || '';
+    const pltc   = config.capikey   || config.PTLC   || '';
 
     // Jika salah satu belum diisi → OFFLINE
     if (!domain || !plta || !pltc) {
