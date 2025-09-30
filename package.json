@@ -25,7 +25,7 @@
     "url": "https://github.com/wanz-code/pterodactyl"
   },
   "dependencies": {
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.6.7",
     "qrcode": "^1.5.4",
     "express": "^4.19.2",
     "dotenv": "^16.4.5",
