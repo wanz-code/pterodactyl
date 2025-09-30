@@ -1,0 +1,42 @@
+{
+  "name": "wanz-official-panel",
+  "version": "1.0.0",
+  "description": "Order Panel Pterodactyl — Wanz Official",
+  "main": "database.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node database.js",
+    "lint": "eslint .",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "pterodactyl",
+    "panel",
+    "order",
+    "qris",
+    "cashify",
+    "wanz",
+    "vercel"
+  ],
+  "author": "Wanz Official <wa.me/6283898286223>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wanz-code/pterodactyl"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "qrcode": "^1.5.4",
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.12.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
