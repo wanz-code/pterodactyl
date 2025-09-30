@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Order Panel Pterodactyl — Wanz Panel Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+ <style>
+  :root{
+    --bg:#060712;
+    --card:#081022;
+    --muted:#9aa0b0;
+    --accent:#7b61ff;
+    --accent2:#00ffd1;
+    --glass:rgba(255,255,255,0.05);
+    --success:#4ee3a1;
+    --danger:#ff7b7b;
+    --soft:#0b1220;
+  }
+  *{box-sizing:border-box}
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:Inter,system-ui,Arial;
+    background:
+      radial-gradient(1200px 400px at 10% 10%, rgba(123,97,255,0.06), transparent 8%),
+      linear-gradient(180deg,#030513,#071022);
+    color:#eaf3ff;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:18px auto;padding:16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+  .leftRow{display:flex;align-items:center;gap:12px}
+  .hamb{
+    width:46px;height:46px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:800;color:#061018;cursor:pointer;
+    box-shadow:0 6px 24px rgba(11,17,34,0.6);
+    transform-origin:center;
+    transition:transform .18s ease;
+  }
+  .hamb:active{transform:scale(.95)}
+  h1{margin:0;font-size:18px}
+  .sub{color:var(--muted);font-size:13px}
+
+  /* status */
+  .status{display:flex;gap:6px;align-items:center;padding:6px 10px;border-radius:12px;
+    background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+    border:1px solid rgba(255,255,255,0.05)}
+  .status .dot{width:10px;height:10px;border-radius:50%}
+  .status.online .dot{background:var(--success);box-shadow:0 0 12px rgba(78,227,161,0.4)}
+  .status.offline .dot{background:var(--danger)}
+
+  /* logo top-right */
+  .logoWrap{width:52px;height:52px;border-radius:50%;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    box-shadow:0 10px 30px rgba(11,17,34,0.6)}
+  .logoWrap img{width:48px;height:48px;border-radius:50%;object-fit:cover;display:block}
+
+  /* layout cards */
+  .main{display:grid;grid-template-columns:1fr;gap:18px;margin-top:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+    padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+    transition:transform .25s cubic-bezier(.2,.9,.3,1),box-shadow .25s ease}
+  .card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(6,8,20,0.6)}
+  .card h3{margin:0 0 8px 0}
+  .muted{color:var(--muted);font-size:13px}
+  .price{font-weight:800;color:var(--accent2);font-size:18px}
+  .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#061018;padding:8px 12px;border-radius:10px;border:0;
+    cursor:pointer;font-weight:800;transition:transform .15s ease}
+  .btn:active{transform:scale(.96)}
+  .btn.tiny{padding:6px 8px;font-size:13px;border-radius:8px}
+
+  /* sidebar */
+  .sidebarBack{
+    position:fixed;inset:0;display:none;
+    background:rgba(0,0,0,0.3);
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    opacity:0;transition:opacity .3s ease;z-index:80}
+  .sidebarBack.show{display:block;opacity:1}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;width:320px;max-width:86vw;
+    background:linear-gradient(180deg,#071124,#091428);
+    padding:16px;border-right:1px solid rgba(255,255,255,0.05);
+    border-top-right-radius:12px;border-bottom-right-radius:12px;
+    box-shadow:8px 0 30px rgba(0,0,0,0.6);
+    transform:translateX(-110%) scale(0.96);opacity:0;
+    transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .35s ease;z-index:90}
+  .sidebar.open{transform:translateX(0) scale(1);opacity:1}
+  .sidebar h3{margin:0 0 8px 0}
+  .historyList{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto;padding-right:6px}
+  .histItem{background:var(--glass);padding:10px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:transform .12s}
+  .histItem:active{transform:translateY(2px)}
+
+  /* overlay modal */
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    z-index:120;opacity:0;transition:opacity .3s ease;padding:16px}
+  .overlay.open{display:flex;opacity:1}
+  .modal{width:100%;max-width:880px;background:linear-gradient(180deg,#071022,#0b0f1c);
+    padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,0.05);
+    box-shadow:0 24px 60px rgba(0,0,0,0.6);transform:translateY(20px) scale(0.96);
+    opacity:0;transition:transform .35s cubic-bezier(.2,.9,.3,1),opacity .35s ease}
+  .overlay.open .modal{transform:translateY(0) scale(1);opacity:1}
+  .modalHeader{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .modalBody{margin-top:12px}
+
+  /* form */
+  .field{margin-top:10px}
+  input,select,textarea{
+    width:100%;padding:12px;border-radius:10px;
+    border:1px solid rgba(255,255,255,0.03);
+    background:transparent;color:#eaf3ff}
+
+  /* QR area */
+  .qrBox{margin-top:12px;background:rgba(255,255,255,0.02);
+    padding:12px;border-radius:10px;text-align:center}
+  img.qr{width:280px;height:280px;border-radius:10px;max-width:86vw}
+
+  /* panel data */
+  .panelData{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .chip{background:rgba(255,255,255,0.03);padding:8px;border-radius:10px;
+    display:inline-flex;gap:8px;align-items:center}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .countdown{font-weight:800;color:var(--accent2);font-size:18px}
+  .mutedSmall{color:var(--muted);font-size:13px}
+  .footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px}
+
+  /* toast notif iphone style */
+  /* toast notification */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: 60px;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20, 20, 28, 0.9);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+  z-index: 200;
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+  #toast .chip {
+    background:rgba(20,25,45,0.8);
+    backdrop-filter:blur(12px) saturate(160%);
+    -webkit-backdrop-filter:blur(12px) saturate(160%);
+    padding:12px 18px;border-radius:14px;
+    border:1px solid rgba(255,255,255,0.08);
+    font-weight:600;font-size:14px;
+    color:#eaf3ff;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  /* animations */
+  .fadeIn{animation:fadeIn .28s ease both}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .pulse{animation:pulse 2s infinite}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+
+  /* responsive */
+  @media (max-width:880px){
+    .grid{grid-template-columns:repeat(1,1fr)}
+    .sidebar{width:86vw}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+  <div class="leftRow">
+    <div id="hamb" class="hamb" title="History">☰</div>
+    <div>
+      <h1 style="margin:0;font-size:18px">Order Panel Pterodactyl</h1>
+      <div class="sub">Pembayaran otomatis via QRIS</div>
+    </div>
+  </div>
+
+  <div class="rightRow" style="display:flex;align-items:center;gap:14px">
+    <div id="statusBox" class="status offline" title="Status server">
+      <div class="dot"></div>
+      <div id="statusText"
+           style="font-weight:700;font-size:13px;margin-left:6px">
+        Offline
+      </div>
+    </div>
+    <div class="logoWrap" title="Wanz Official"
+         style="width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.5)">
+      <img src="https://files.catbox.moe/a8uk9h.jpg"
+           alt="Wanz Logo"
+           style="width:100%;height:100%;object-fit:cover" />
+    </div>
+  </div>
+</header>
+
+    <main class="main">
+      <section>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="display:flex;flex-direction:column">
+            <div style="font-weight:800;font-size:16px">Pilih Paket</div>
+            <div class="mutedSmall"></div>
+          </div>
+          <div>
+            <button id="btnRefreshStatus" class="btn tiny">Refresh</button>
+          </div>
+        </div>
+
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <div class="footer">© 2025 Wanz Official</div>
+    </main>
+  </div>
+
+  <!-- sidebar -->
+  <div id="sidebarBack" class="sidebarBack"></div>
+  <aside id="sidebar" class="sidebar" aria-hidden="true">
+    <button id="closeSidebar" style="background:transparent;border:0;color:var(--muted);font-weight:800;float:right;cursor:pointer">✕</button>
+    <h3>History Pesanan</h3>
+    <div class="mutedSmall" style="margin-bottom:8px">Klik item untuk lihat detail.</div>
+    <div id="historyList" class="historyList"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+      <button id="clearHistory" class="btn tiny" style="background:#ff7b7b">Hapus semua</button>
+    </div>
+  </aside>
+
+  <!-- modal purchase -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="modal fadeIn" role="dialog" aria-modal="true">
+      <div class="modalHeader">
+        <div>
+          <div id="modalTitle" style="font-weight:800">Beli panel</div>
+          <div id="modalSub" class="mutedSmall">Isi username lalu klik Beli server</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div id="modalStatus" class="mutedSmall"></div>
+          <button id="closeModal" class="btn tiny">Tutup</button>
+        </div>
+      </div>
+
+      <div class="modalBody">
+        <div class="field">
+          <label style="font-size:13px;color:var(--muted)">Username server</label>
+          <input id="inputUser" placeholder="username (3-15)" autocomplete="username" />
+        </div>
+
+        <div class="field" style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="mutedSmall">Keterangan Paket</div>
+              <div id="pkgDesc" style="font-weight:800"></div>
+            </div>
+            <div style="text-align:right">
+              <div id="pkgPrice" class="price"></div>
+              <div class="mutedSmall" style="margin-top:4px">Bergaransi  <span id="pkgExpiredNote">1x replace</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnBuy" class="btn">Beli server</button>
+          <button id="btnCancel" class="btn tiny" style="background:#ff7b7b">Batal</button>
+        </div>
+
+        <div id="qrWrap" class="qrBox" style="display:none">
+          <div id="qrInfo" class="mutedSmall"></div>
+          <div id="qrArea" style="margin-top:10px;text-align:center">
+            <img id="qrImg" class="qr" src="" alt="QRIS" style="display:block;margin:0 auto" />
+          </div>
+          <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+            <div class="countdown" id="countdown">15:00</div>
+            <button id="btnDownload" class="btn tiny">Download QR</button>
+            <button id="btnRefresh" class="btn tiny">Refresh status</button>
+          </div>
+          <div id="panelResult" class="panelResult" style="margin-top:12px"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- popup history detail -->
+  <div id="detailOverlay" class="overlay" aria-hidden="true">
+    <div class="modal fadeIn" style="max-width:780px">
+      <div class="modalHeader">
+        <div><div id="detailTitle" style="font-weight:800">Detail</div><div id="detailSub" class="mutedSmall"></div></div>
+        <div><button id="closeDetail" class="btn tiny">Tutup</button></div>
+      </div>
+      <div class="modalBody" id="detailBody" style="max-height:60vh;overflow:auto"></div>
+    </div>
+  </div>
+
+  <!-- toast -->
+  <!-- toast / notif -->
+<div id="toast">
+  <div id="toastText">Pesan Notif</div>
+</div>
+
+  <script>
+async function checkServerStatus() {
+  const box = document.getElementById("statusBox");
+  const text = document.getElementById("statusText");
+
+  try {
+    const res = await fetch("/api/database?action=status");
+    const data = await res.json();
+
+    if (data.status === "online") {
+      box.classList.remove("offline");
+      box.classList.add("online");
+      text.textContent = "Online";
+      text.style.color = "#00ffd1";
+    } else {
+      box.classList.remove("online");
+      box.classList.add("offline");
+      text.textContent = "Offline";
+      text.style.color = "#ff7b7b";
+    }
+  } catch (e) {
+    box.classList.remove("online");
+    box.classList.add("offline");
+    text.textContent = "Offline";
+    text.style.color = "#ff7b7b";
+  }
+}
+
+    // ---------- DATA ----------
+    const PACKAGES = {
+      "1gb":  { ram:1024,  disk:10240,  cpu:100,  name:"1 GB",  price:1000,  desc:"Paket starter untuk belajar & testing" },
+      "2gb":  { ram:2048,  disk:20480,  cpu:200,  name:"2 GB",  price:2000,  desc:"Cocok untuk bot sederhana & website kecil" },
+      "3gb":  { ram:3072,  disk:30720,  cpu:300,  name:"3 GB",  price:3000,  desc:"Stabil untuk website medium & API" },
+      "4gb":  { ram:4096,  disk:40960,  cpu:400,  name:"4 GB",  price:4000,  desc:"Performa bagus untuk aplikasi yang lebih berat" },
+      "5gb":  { ram:5120,  disk:51200,  cpu:500,  name:"5 GB",  price:5000,  desc:"Powerful untuk server game kecil & aplikasi besar" },
+      "6gb":  { ram:6144,  disk:61440,  cpu:600,  name:"6 GB",  price:5600,  desc:"Tangguh untuk website traffic tinggi" },
+      "7gb":  { ram:7168,  disk:71680,  cpu:700,  name:"7 GB",  price:6700,  desc:"Cocok untuk sistem menengah ke atas" },
+      "8gb":  { ram:8192,  disk:81920,  cpu:800,  name:"8 GB",  price:7800,  desc:"Ideal untuk e-commerce & sistem besar" },
+      "9gb":  { ram:9216,  disk:92160,  cpu:900,  name:"9 GB",  price:8900,  desc:"Performa tinggi untuk project demanding" },
+      "10gb": { ram:10240, disk:102400, cpu:1000, name:"10 GB", price:9100, desc:"Maximal untuk project enterprise & layanan besar" },
+      "unlimited": { ram:0, disk:0, cpu:0, name:"Unlimited", price:10000, desc:"Paket tanpa batas untuk full performance" },
+      "reseller":  { ram:0, disk:0, cpu:0, name:"Reseller", price:15000, desc:"Khusus reseller — manual handling" }
+    };
+
+    // ---------- ELEMENTS ----------
+    const grid = document.getElementById('grid');
+    const hamb = document.getElementById('hamb');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBack = document.getElementById('sidebarBack');
+    const closeSidebar = document.querySelector('#sidebar button');
+    const historyList = document.getElementById('historyList');
+    const clearHistory = document.getElementById('clearHistory');
+    const statusBox = document.getElementById('statusBox');
+    const statusText = document.getElementById('statusText');
+    const btnRefreshStatus = document.getElementById('btnRefreshStatus');
+
+    const overlay = document.getElementById('overlay');
+    const closeModal = document.getElementById('closeModal');
+    const inputUser = document.getElementById('inputUser');
+    const pkgDesc = document.getElementById('pkgDesc');
+    const pkgPrice = document.getElementById('pkgPrice');
+    const btnBuy = document.getElementById('btnBuy');
+    const btnCancel = document.getElementById('btnCancel');
+    const qrWrap = document.getElementById('qrWrap');
+    const qrImg = document.getElementById('qrImg');
+    const qrInfo = document.getElementById('qrInfo');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnRefresh = document.getElementById('btnRefresh');
+    const countdownEl = document.getElementById('countdown');
+    const panelResult = document.getElementById('panelResult');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalStatus = document.getElementById('modalStatus');
+
+    const detailOverlay = document.getElementById('detailOverlay');
+    const detailBody = document.getElementById('detailBody');
+    const closeDetail = document.getElementById('closeDetail');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSub = document.getElementById('detailSub');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+
+    // ---------- STATE ----------
+    let current = null; // { key, pkg, trxId, expiresAt, pollTimer, countdownTimer }
+    const STORAGE_KEY = 'wanz_store_history_v2';
+
+    // ---------- UTIL ----------
+    function showToast(msg, t=3000){
+  toastText.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  }, t);
+}
+
+    function nowISO(){ return new Date().toISOString(); }
+    function fmtWIB(iso){
+      try{ return new Date(iso).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}); } catch(e){ return iso; }
+    }
+
+    function loadHistory(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } }
+    function saveHistory(h){ localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+    function pushHistory(item){ const h = loadHistory(); h.unshift(item); if(h.length>200) h.pop(); saveHistory(h); renderHistory(); }
+
+    function renderHistory(){
+      const h = loadHistory();
+      historyList.innerHTML = '';
+      if(!h.length){ historyList.innerHTML = '<div class="mutedSmall">Belum ada history</div>'; return; }
+      h.forEach(it=>{
+        const el = document.createElement('div');
+        el.className = 'histItem';
+        el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong>${it.pkgName}</strong>
+            <div class="mutedSmall">${it.username || '-'} • ${it.status}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mutedSmall">${it.timeWIB || '-'}</div>
+          </div>
+        </div>`;
+        el.addEventListener('click', ()=> openHistoryDetail(it));
+        historyList.appendChild(el);
+      });
+    }
+
+    function openHistoryDetail(item){
+      detailTitle.textContent = `${item.pkgName} — ${item.status}`;
+      detailSub.textContent = item.timeWIB || '';
+      let html = `<div style="display:flex;flex-direction:column;gap:10px">`;
+      html += `<div class="mutedSmall">Username: <strong>${item.username||'-'}</strong></div>`;
+      if(item.panel){
+        const p = item.panel;
+        html += `<div class="mutedSmall">Server ID: <strong>${p.serverId||'-'}</strong></div>`;
+        html += `<div class="mutedSmall">User ID: <strong>${p.userId||'-'}</strong></div>`;
+        html += `<div class="mutedSmall">Domain: <strong>${p.domain||'-'}</strong></div>`;
+        html += `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">`;
+        html += `<div class="chip">${p.username} <button class="tiny" onclick="copyText('${escapeSingle(p.username)}')">Copy</button></div>`;
+        html += `<div class="chip">${p.password || '-'} <button class="tiny" onclick="copyText('${escapeSingle(p.password||'')}')">Copy</button></div>`;
+        html += `<div class="chip">${p.domain} <button class="tiny" onclick="window.open('${escapeSingle(p.domain)}','_blank')">Login</button></div>`;
+        html += `<div style="width:100%"><button class="btn tiny" onclick="copyAll(${encodeURIComponent(JSON.stringify(p))})">Copy All</button></div>`;
+        html += `</div>`;
+      } else {
+        html += `<div class="mutedSmall">Belum ada panel (pending / expired)</div>`;
+      }
+      html += `</div>`;
+      detailBody.innerHTML = html;
+      detailOverlay.classList.add('open');
+      detailOverlay.setAttribute('aria-hidden','false');
+    }
+
+    function closeDetailFn(){ detailOverlay.classList.remove('open'); detailOverlay.setAttribute('aria-hidden','true'); }
+    closeDetail.addEventListener('click', closeDetailFn);
+    detailOverlay.addEventListener('click', (e)=>{ if(e.target===detailOverlay) closeDetailFn(); });
+
+    function escapeSingle(s){ if(!s) return ''; return String(s).replace(/'/g,"\\'").replace(/"/g,'\\"'); }
+    window.copyText = async function(s){ if(!s) return showToast('Tidak ada data'); try{ await navigator.clipboard.writeText(s); showToast('Disalin ke clipboard') }catch(e){ showToast('Gagal salin') } }
+    window.copyAll = function(encoded){ try{ const p = JSON.parse(decodeURIComponent(encoded)); navigator.clipboard.writeText(JSON.stringify(p,null,2)); showToast('Semua data disalin'); }catch(e){ showToast('Gagal copy all') } }
+
+    // ---------- render products ----------
+    function renderProducts(){
+      grid.innerHTML = '';
+      Object.keys(PACKAGES).forEach(k=>{
+        const p = PACKAGES[k];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h3>${p.name}</h3>
+          <div class="muted">${p.desc}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <div>
+              <div class="price">Rp${Number(p.price).toLocaleString('id-ID')}</div>
+              <div class="mutedSmall">RAM ${p.ram? (p.ram/1024)+' GB' : 'Unlimited'} • Disk ${p.disk? (p.disk/1024)+' GB' : 'Unlimited'}</div>
+            </div>
+            <div><button class="btn" data-key="${k}">Detail</button></div>
+          </div>`;
+        grid.appendChild(card);
+      });
+      grid.querySelectorAll('button.btn').forEach(b=> b.addEventListener('click', e=> openModal(e.currentTarget.dataset.key)));
+    }
+
+    // ---------- modal controls ----------
+    function openModal(key){
+      const p = PACKAGES[key];
+      current = { key, pkg: p, trxId: null, expiresAt: null, pollTimer: null, countdownTimer: null };
+      modalTitle.textContent = `Beli: ${p.name}`;
+      pkgDesc.textContent = p.desc;
+      pkgPrice.textContent = `Rp${Number(p.price).toLocaleString('id-ID')}`;
+      inputUser.value = '';
+      panelResult.innerHTML = '';
+      qrWrap.style.display = 'none';
+      modalStatus.textContent = '';
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+    }
+
+    function closeModalFn(){
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      stopPolling();
+    }
+    closeModal.addEventListener('click', closeModalFn);
+    overlay.addEventListener('click',(e)=>{ if(e.target===overlay) closeModalFn() });
+
+    // ---------- QR & polling ----------
+    async function postJson(url, body){
+      try {
+        const res = await fetch(url, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+        return await res.json();
+      } catch(e){
+        return { ok:false, error:'network' };
+      }
+    }
+
+    btnBuy.addEventListener('click', async ()=>{
+      if(!current) return showToast('Pilih paket dulu');
+      const username = inputUser.value.trim();
+      if(!/^[a-zA-Z0-9_]{3,15}$/.test(username)) return showToast('Username invalid (3-15 chars)');
+      btnBuy.disabled = true;
+      btnBuy.textContent = 'Generating QRIS...';
+      showToast('Membuat QRIS...');
+      try {
+        const body = { productKey: current.key, username };
+        const r = await postJson('/api/database?action=create-qris', body);
+        if(!r || !r.ok){ showToast('Gagal membuat QRIS'); btnBuy.disabled=false; btnBuy.textContent='Beli server'; return; }
+        const q = r.qris || {};
+        current.trxId = q.transactionId || ('local-'+Date.now());
+        current.expiresAt = q.expiredAt || null;
+        // show QR
+        if(q.qr_image){ qrImg.src = q.qr_image; qrImg.style.display='block'; } else { qrImg.style.display='none'; }
+        qrInfo.innerHTML = `Trx: <strong>${current.trxId}</strong> • Nominal: <strong>Rp${Number(q.totalAmount||current.pkg.price).toLocaleString('id-ID')}</strong>`;
+        qrWrap.style.display = 'block';
+        panelResult.innerHTML = '<div class="mutedSmall">Menunggu pembayaran...</div>';
+        // history pending
+        pushHistory({ id: current.trxId, pkgName: current.pkg.name, username, status:'pending', timeWIB: fmtWIB(nowISO()), expiresAt: current.expiresAt });
+        // download
+        if(q.qr_image){ btnDownload.onclick = ()=> downloadDataUrl(q.qr_image, `qris-${current.trxId||Date.now()}.png`); } else { btnDownload.onclick = ()=> showToast('Tidak ada gambar QR'); }
+        // start countdown
+        startCountdown(current.expiresAt);
+        // start polling
+        startPolling();
+      } catch(e){
+        console.error(e); showToast('Error creating QRIS'); 
+      } finally {
+        btnBuy.disabled = false; btnBuy.textContent = 'Beli server';
+      }
+    });
+
+    btnCancel.addEventListener('click', ()=>{
+      if(current && current.trxId) updateHistoryStatus(current.trxId,'cancel');
+      closeModalFn();
+      showToast('Dibatalkan');
+    });
+
+    btnRefresh.addEventListener('click', checkStatusOnce);
+
+    function downloadDataUrl(dataUrl, filename){
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // polling
+    function startPolling(){
+      stopPolling();
+      if(!current || !current.trxId) return;
+      current.pollTimer = setInterval(checkStatusOnce, 5000);
+    }
+    function stopPolling(){ if(current && current.pollTimer){ clearInterval(current.pollTimer); current.pollTimer = null; } if(current && current.countdownTimer){ clearInterval(current.countdownTimer); current.countdownTimer=null; } }
+
+    async function checkStatusOnce(){
+      if(!current || !current.trxId) return;
+      try {
+        const body = { transactionId: current.trxId, productKey: current.key, username: inputUser.value.trim() };
+        const j = await postJson('/api/database?action=check-status', body);
+        if(!j || !j.ok){ console.warn('check failed',j); return; }
+        const status = j.status || (j.raw && j.raw.data && j.raw.data.status) || null;
+        // update history
+        updateHistoryStatus(current.trxId, status || 'pending', { expiresAt: j.raw && j.raw.data && j.raw.data.expiredAt });
+        if(status === 'paid'){
+          stopPolling();
+          showToast('Pembayaran diterima. Membuat panel...');
+          // show panel data if available
+          if(j.panel){
+            showPanelResult(j.panel);
+            updateHistoryStatus(current.trxId,'paid',{ panel:j.panel });
+          } else {
+            panelResult.innerHTML = '<div class="mutedSmall">Paid — menunggu pembuatan panel...</div>';
+            // try fetch panel again after small delay
+            await new Promise(r=>setTimeout(r,1200));
+            const j2 = await postJson('/api/database?action=check-status', body);
+            if(j2 && j2.ok && j2.panel){ showPanelResult(j2.panel); updateHistoryStatus(current.trxId,'paid',{ panel:j2.panel }); }
+          }
+          return;
+        }
+        if(status === 'expired'){
+          stopPolling();
+          panelResult.innerHTML = `<div class="mutedSmall" style="color:var(--danger)">QRIS telah expired</div>`;
+          // remove qr
+          qrImg.src=''; qrImg.style.display='none';
+          updateHistoryStatus(current.trxId,'expired',{});
+        }
+      } catch(e){ console.warn('poll error',e) }
+    }
+
+    function showPanelResult(panel){
+      // normalize
+      const p = typeof panel==='string' ? JSON.parse(panel) : panel;
+      const username = p.username || p.user || inputUser.value.trim();
+      const password = p.password || p.pw || p.pass || '';
+      const domain = p.domain || p.serverHostname || window.location.origin;
+      const serverId = p.serverId || p.id || p.identifier || '-';
+      const userId = p.userId || p.user || '-';
+      let html = `<div class="panelData">`;
+      html += `<div class="mutedSmall">Panel berhasil dibuat</div>`;
+      html += `<div style="display:flex;gap:8px;flex-wrap:wrap">`;
+      html += `<div class="chip">Username: <strong>${username}</strong> <button class="tiny" onclick="copyText('${escapeSingle(username)}')">Copy</button></div>`;
+      html += `<div class="chip">Password: <strong>${password||'-'}</strong> <button class="tiny" onclick="copyText('${escapeSingle(password)}')">Copy</button></div>`;
+      html += `<div class="chip">Domain: <strong>${domain}</strong> <button class="tiny" onclick="window.open('${escapeSingle(domain)}','_blank')">Login</button></div>`;
+      html += `</div>`;
+      html += `<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">`;
+      html += `<div class="mutedSmall">Server ID: <strong>${serverId}</strong></div>`;
+      html += `<div class="mutedSmall">User ID: <strong>${userId}</strong></div>`;
+      html += `</div>`;
+      html += `<div style="margin-top:8px"><button class="btn tiny" onclick="copyText(JSON.stringify({username:'${escapeSingle(username)}',password:'${escapeSingle(password)}',domain:'${escapeSingle(domain)}',serverId:'${escapeSingle(serverId)}',userId:'${escapeSingle(userId)}'},null,2))">Copy All</button></div>`;
+      html += `</div>`;
+      panelResult.innerHTML = html;
+    }
+
+    // countdown
+    function startCountdown(expiredAt){
+      if(!expiredAt){ countdownEl.textContent = '15:00'; return; }
+      const end = new Date(expiredAt).getTime();
+      if(isNaN(end)){ countdownEl.textContent = '15:00'; return; }
+      updateCountdown();
+      if(current.countdownTimer) clearInterval(current.countdownTimer);
+      current.countdownTimer = setInterval(updateCountdown, 1000);
+      function updateCountdown(){
+        const now = Date.now();
+        const diff = Math.max(0, end - now);
+        const mins = Math.floor(diff/60000);
+        const secs = Math.floor((diff%60000)/1000);
+        countdownEl.textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        if(diff<=0){
+          clearInterval(current.countdownTimer);
+          current.countdownTimer = null;
+          // expired
+          panelResult.innerHTML = `<div class="mutedSmall" style="color:var(--danger)">QRIS telah expired</div>`;
+          qrImg.src=''; qrImg.style.display='none';
+          updateHistoryStatus(current.trxId,'expired',{});
+          stopPolling();
+        }
+      }
+    }
+
+    // ---------- history helpers ----------
+    function updateHistoryStatus(id, status, extra = {}){
+      const h = loadHistory();
+      const idx = h.findIndex(x => x.id === id);
+      const timeWIB = fmtWIB(nowISO());
+      if(idx === -1){
+        const item = Object.assign({ id, status, timeWIB }, extra);
+        if(current && current.pkg) item.pkgName = current.pkg.name;
+        pushHistory(item);
+        return;
+      }
+      h[idx] = Object.assign({}, h[idx], { status, timeWIB }, extra);
+      saveHistory(h);
+      renderHistory();
+    }
+
+    clearHistory.addEventListener('click', ()=>{ if(confirm('Hapus semua history?')){ localStorage.removeItem(STORAGE_KEY); renderHistory(); showToast('History dibersihkan'); } });
+
+    
+    
+    // ---------- sidebar controls ----------
+hamb.addEventListener('click', ()=>{
+  sidebar.classList.add('open');
+  sidebarBack.classList.add('show');
+  sidebar.setAttribute('aria-hidden','false');
+});
+
+closeSidebar.addEventListener('click', closeSidebarFn);
+sidebarBack.addEventListener('click', closeSidebarFn);
+
+function closeSidebarFn(){
+  sidebar.classList.remove('open');
+  sidebarBack.classList.remove('show');
+  sidebar.setAttribute('aria-hidden','true');
+}
+
+    // ---------- init ----------
+    renderProducts();
+    renderHistory();
+    checkServerStatus();
+
+    // ---------- small helpers ----------
+    function downloadBlob(url){ const a=document.createElement('a'); a.href=url; a.click(); a.remove(); }
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ---------- copy fallback for encoded JSON in detail (exposed to window copyAll) ----------
+    window.copyAll = function(encoded){ try{ const p = JSON.parse(decodeURIComponent(encoded)); navigator.clipboard.writeText(JSON.stringify(p,null,2)); showToast('Copied all'); }catch(e){ showToast('Fail copy all') } }
+
+    // expose some functions to global for inline onclicks used in dynamic HTML
+    window.copyText = window.copyText;
+    window.copyAll = window.copyAll;
+
+  </script>
+</body>
+</html>
