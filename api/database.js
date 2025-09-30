@@ -50,6 +50,25 @@ const PACKAGES = {
 // ----------------------------- IN-MEMORY RATE LIMIT (simple) -----------------------------
 const rateStore = new Map(); // key: ip, value: { count, windowStart }
 
+// Contoh di dalam handler utama API
+if (action === 'status') {
+  const { domain, plta, pltc } = config;
+
+  // Jika salah satu kosong → OFFLINE
+  if (!domain || !plta || !pltc) {
+    return res.status(200).json({
+      online: false,
+      message: 'Domain / PLTA / PLTC belum lengkap'
+    })
+  }
+
+  // Kalau semua terisi → ONLINE
+  return res.status(200).json({
+    online: true,
+    message: 'Semua konfigurasi lengkap'
+  })
+                }
+
 function checkRateLimit(ip) {
   const now = Date.now();
   const rec = rateStore.get(ip);
