@@ -2,10 +2,10 @@
   "name": "wanz-official-panel",
   "version": "1.0.0",
   "description": "Order Panel Pterodactyl — Wanz Official",
-  "main": "database.js",
+  "main": "api/database.js",
   "scripts": {
     "dev": "vercel dev",
-    "start": "node database.js",
+    "start": "node api/database.js",
     "lint": "eslint .",
     "deploy": "vercel --prod"
   },
