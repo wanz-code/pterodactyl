@@ -11,7 +11,7 @@
 
 
 
-const fetch = require('node-fetch');
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const QRCode = require('qrcode');
 const crypto = require('crypto');
 
