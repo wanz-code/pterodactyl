@@ -35,18 +35,18 @@ const config = {
 
 // ----------------------------- PACKAGES (1GB -> 10GB + unlimited + reseller) -----------------------------
 const PACKAGES = {
-  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 10000,  desc: "Paket starter untuk belajar & testing" },
-  "2gb":  { ram: 2048,  disk: 20480,   cpu: 200,  name: "2 GB",  price: 20000,  desc: "Cocok untuk bot sederhana & website kecil" },
-  "3gb":  { ram: 3072,  disk: 30720,   cpu: 300,  name: "3 GB",  price: 30000,  desc: "Stabil untuk website medium & API" },
-  "4gb":  { ram: 4096,  disk: 40960,   cpu: 400,  name: "4 GB",  price: 40000,  desc: "Performa bagus untuk aplikasi yang lebih berat" },
-  "5gb":  { ram: 5120,  disk: 51200,   cpu: 500,  name: "5 GB",  price: 50000,  desc: "Powerful untuk server game kecil & aplikasi besar" },
-  "6gb":  { ram: 6144,  disk: 61440,   cpu: 600,  name: "6 GB",  price: 60000,  desc: "Tangguh untuk website traffic tinggi" },
-  "7gb":  { ram: 7168,  disk: 71680,   cpu: 700,  name: "7 GB",  price: 70000,  desc: "Cocok untuk sistem menengah ke atas" },
-  "8gb":  { ram: 8192,  disk: 81920,   cpu: 800,  name: "8 GB",  price: 80000,  desc: "Ideal untuk e-commerce & sistem besar" },
-  "9gb":  { ram: 9216,  disk: 92160,   cpu: 900,  name: "9 GB",  price: 90000,  desc: "Performa tinggi untuk project demanding" },
-  "10gb": { ram: 10240, disk: 102400,  cpu: 1000, name: "10 GB", price: 100000, desc: "Maximal untuk project enterprise & layanan besar" },
-  "unlimited": { ram: 0, disk: 0, cpu: 0, name: "Unlimited", price: 150000, desc: "Paket tanpa batas untuk full performance" },
-  "reseller":  { ram: 0, disk: 0, cpu: 0, name: "Reseller",  price: 250000, desc: "Khusus reseller — bisa jualan panel sendiri" }
+  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 1,  desc: "Paket starter untuk belajar & testing" },
+  "2gb":  { ram: 2048,  disk: 20480,   cpu: 200,  name: "2 GB",  price: 2000,  desc: "Cocok untuk bot sederhana & website kecil" },
+  "3gb":  { ram: 3072,  disk: 30720,   cpu: 300,  name: "3 GB",  price: 3000,  desc: "Stabil untuk website medium & API" },
+  "4gb":  { ram: 4096,  disk: 40960,   cpu: 400,  name: "4 GB",  price: 4000,  desc: "Performa bagus untuk aplikasi yang lebih berat" },
+  "5gb":  { ram: 5120,  disk: 51200,   cpu: 500,  name: "5 GB",  price: 5000,  desc: "Powerful untuk server game kecil & aplikasi besar" },
+  "6gb":  { ram: 6144,  disk: 61440,   cpu: 600,  name: "6 GB",  price: 5600,  desc: "Tangguh untuk website traffic tinggi" },
+  "7gb":  { ram: 7168,  disk: 71680,   cpu: 700,  name: "7 GB",  price: 6700,  desc: "Cocok untuk sistem menengah ke atas" },
+  "8gb":  { ram: 8192,  disk: 81920,   cpu: 800,  name: "8 GB",  price: 7800,  desc: "Ideal untuk e-commerce & sistem besar" },
+  "9gb":  { ram: 9216,  disk: 92160,   cpu: 900,  name: "9 GB",  price: 8900,  desc: "Performa tinggi untuk project demanding" },
+  "10gb": { ram: 10240, disk: 102400,  cpu: 1000, name: "10 GB", price: 9100, desc: "Maximal untuk project enterprise & layanan besar" },
+  "unlimited": { ram: 0, disk: 0, cpu: 0, name: "Unlimited", price: 10000, desc: "Paket tanpa batas untuk full performance" },
+  "reseller":  { ram: 0, disk: 0, cpu: 0, name: "Reseller",  price: 15000, desc: "Khusus reseller — bisa jualan panel sendiri" }
 };
 
 // ----------------------------- IN-MEMORY RATE LIMIT (simple) -----------------------------
