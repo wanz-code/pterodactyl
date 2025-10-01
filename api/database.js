@@ -24,7 +24,7 @@ const config = {
   nestid: process.env.NESTID || '5',
   location: process.env.LOC || '1',
   licenseKey: process.env.LICENSE_KEY || 'cashify_dd4b6896be3aca9beca57c8faec3a756330498b189839d687f458aa022d9da61',
-  qrisStaticId: process.env.QRIS_STATIC_ID || 'f5d5be62-afa6-4622-9b8d-e4423715978c',
+  qrisStaticId: process.env.QRIS_STATIC_ID || '5aac1f99-4f5d-4352-bdd3-8da5470f4a44',
   qrisEndpoint: process.env.QRIS_ENDPOINT || 'https://cashify.my.id/api/generate/qris',
   qrisCheck: process.env.QRIS_CHECK || 'https://cashify.my.id/api/generate/check-status',
   DEFAULT_QRIS_EXPIRE_MINUTES: Number(process.env.QRIS_EXPIRE_MINUTES || 15),
@@ -35,7 +35,7 @@ const config = {
 
 // ----------------------------- PACKAGES (1GB -> 10GB + unlimited + reseller) -----------------------------
 const PACKAGES = {
-  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 560,  desc: "Paket starter untuk belajar & testing" },
+  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 1,  desc: "Paket starter untuk belajar & testing" },
   "2gb":  { ram: 2048,  disk: 20480,   cpu: 200,  name: "2 GB",  price: 2000,  desc: "Cocok untuk bot sederhana & website kecil" },
   "3gb":  { ram: 3072,  disk: 30720,   cpu: 300,  name: "3 GB",  price: 3000,  desc: "Stabil untuk website medium & API" },
   "4gb":  { ram: 4096,  disk: 40960,   cpu: 400,  name: "4 GB",  price: 4000,  desc: "Performa bagus untuk aplikasi yang lebih berat" },
@@ -346,7 +346,7 @@ if (action === 'status') {
         id: config.qrisStaticId,
         amount,
         useUniqueCode: true,
-        packageIds: ['id.dana'],
+        packageIds: ['com.orderkuota.app'],
         expiredInMinutes: config.DEFAULT_QRIS_EXPIRE_MINUTES,
         metadata: { username, productKey }
       };
