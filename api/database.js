@@ -24,7 +24,7 @@ const config = {
   nestid: process.env.NESTID || '5',
   location: process.env.LOC || '1',
   licenseKey: process.env.LICENSE_KEY || 'cashify_dd4b6896be3aca9beca57c8faec3a756330498b189839d687f458aa022d9da61',
-  qrisStaticId: process.env.QRIS_STATIC_ID || '4bd17daa-8c09-422d-8c17-47eb684abaf5',
+  qrisStaticId: process.env.QRIS_STATIC_ID || 'f5d5be62-afa6-4622-9b8d-e4423715978c',
   qrisEndpoint: process.env.QRIS_ENDPOINT || 'https://cashify.my.id/api/generate/qris',
   qrisCheck: process.env.QRIS_CHECK || 'https://cashify.my.id/api/generate/check-status',
   DEFAULT_QRIS_EXPIRE_MINUTES: Number(process.env.QRIS_EXPIRE_MINUTES || 15),
@@ -346,7 +346,7 @@ if (action === 'status') {
         id: config.qrisStaticId,
         amount,
         useUniqueCode: true,
-        packageIds: ['com.orderkuota.app'],
+        packageIds: ['id.dana'],
         expiredInMinutes: config.DEFAULT_QRIS_EXPIRE_MINUTES,
         metadata: { username, productKey }
       };
