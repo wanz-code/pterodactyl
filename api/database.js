@@ -291,7 +291,13 @@ module.exports = async (req, res) => {
     }
 
     const action = req.query?.action ? String(req.query.action) : null;
-    
+
+if (action === "total-orders") {
+  const db = await loadDB();
+  const total = db.filter(x => x.status === "paid").length;
+  return res.json({ total });
+              }
+              
     // ---------- HANDLE: action=status ----------
 if (action === 'status') {
   try {
