@@ -33,8 +33,8 @@ const config = {
   RATE_LIMIT_MAX: Number(process.env.RATE_LIMIT_MAX || 10) 
 };
 
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '8385900567:AAGY2tT9NvpHoDDkiLLdWHO-lXoWcyEjJh4',
-const TELEGRAM_CHATID = process.env.TELEGRAM_CHATID || '7950114253'
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '8385900567:AAGY2tT9NvpHoDDkiLLdWHO-lXoWcyEjJh4';
+const TELEGRAM_CHATID = process.env.TELEGRAM_CHATID || '7950114253';
 
 // ----------------------------- PACKAGES (1GB -> 10GB + unlimited + reseller) -----------------------------
 const PACKAGES = {
