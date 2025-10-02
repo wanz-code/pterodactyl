@@ -140,7 +140,7 @@ let trxId=null, pollTimer=null, countdownTimer=null, expireAt=null;
 // Generate QR
 (async()=>{
   try{
-    const res = await fetch(`./database?action=create-qris&pkg=${pkg}&username=${username}`);
+    const res = await fetch(`./api/database?action=create-qris&pkg=${pkg}&username=${username}`);
     const data = await res.json();
     if(!data || !data.id) throw new Error("Gagal buat QRIS");
 
@@ -181,7 +181,7 @@ function startCountdown(seconds){
 async function checkStatus(){
   if(!trxId) return;
   try{
-    const res = await fetch(`./database?action=check-status&id=${trxId}`);
+    const res = await fetch(`./api/database?action=check-status&id=${trxId}`);
     const data = await res.json();
     if(!data || !data.status) return;
 
