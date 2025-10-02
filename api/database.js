@@ -17,9 +17,9 @@ const crypto = require('crypto');
 
 // ----------------------------- CONFIG -----------------------------
 const config = {
-  domain: process.env.DOMAIN || 'https://publikoktober.kantinvps.my.id',
-  apikey: process.env.PTLA || process.env.PTLA || 'ptla_xPDyof19SYZMJCqHbBewGq7AQSpOjgiLsLwU06mN3xK',
-  capikey: process.env.PTLC || process.env.PTLC || 'ptlc_51RJSA7Tgyd0etw0mJADHx0Oxb4MSoy25to0cFfvMHW',
+  domain: process.env.DOMAIN || '',
+  apikey: process.env.PTLA || process.env.PTLA || '',
+  capikey: process.env.PTLC || process.env.PTLC || '',
   eggid: process.env.EGGID || '15',
   nestid: process.env.NESTID || '5',
   location: process.env.LOC || '1',
