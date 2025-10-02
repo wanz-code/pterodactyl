@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Order Panel Pterodactyl — Wanz Panel Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+ <style>
+  :root{
+  --bg:#060712;
+  --card:#081022;
+  --muted:#9aa0b0;
+  --accent:#7b61ff;
+  --accent2:#00ffd1;
+  --glass:rgba(255,255,255,0.05);
+  --success:#4ee3a1;
+  --danger:#ff7b7b;
+  --soft:#0b1220;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  height:100%;
+  margin:0;
+  font-family:Inter,system-ui,Arial;
+  background:
+    radial-gradient(1200px 400px at 10% 10%, rgba(123,97,255,0.06), transparent 8%),
+    linear-gradient(180deg,#030513,#071022);
+  color:#eaf3ff;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:1100px;margin:18px auto;padding:16px}
+
+/* header */
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.dashLeft{display:flex;align-items:flex-start;gap:12px;flex:1}
+.titleWrap{max-width:100%}
+.dashTitle{margin:0;font-size:20px;font-weight:800;line-height:1.2}
+.dashSub{margin-top:4px;font-size:14px;color:var(--muted)}
+.dashRight{flex-shrink:0}
+
+/* hamburger */
+.hamb{
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#061018;cursor:pointer;
+  box-shadow:0 6px 24px rgba(11,17,34,0.6);
+  transform-origin:center;
+  transition:transform .25s cubic-bezier(.25,.8,.25,1);
+}
+.hamb:active{transform:scale(.95)}
+
+/* logo */
+header .logoWrap{
+  width:34px;height:34px;border-radius:50%;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  box-shadow:0 6px 16px rgba(0,0,0,0.4);
+  flex-shrink:0;
+}
+header .logoWrap img{
+  width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;
+}
+
+/* status box (kalau dipakai di info cards) */
+.status{display:flex;gap:6px;align-items:center;padding:6px 10px;border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+  border:1px solid rgba(255,255,255,0.05)}
+.status .dot{width:10px;height:10px;border-radius:50%}
+.status.online .dot{background:var(--success);box-shadow:0 0 12px rgba(78,227,161,0.4)}
+.status.offline .dot{background:var(--danger)}
+
+/* info cards */
+.infoCards{
+  display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 24px;
+}
+.infoCard{
+  flex:1 1 160px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:12px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  transition:all .3s cubic-bezier(.25,.8,.25,1);
+  opacity:0;
+  transform:translateY(12px);
+  animation:staggerFade .6s cubic-bezier(.25,.8,.25,1) forwards;
+}
+.infoCard:nth-child(1){animation-delay:.1s}
+.infoCard:nth-child(2){animation-delay:.2s}
+.infoCard:nth-child(3){animation-delay:.3s}
+.infoCard:nth-child(4){animation-delay:.4s}
+.infoCard:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,0.25)}
+.ic-icon{font-size:18px}
+.ic-label{font-size:13px;color:var(--muted)}
+.ic-value{font-size:15px;font-weight:700}
+
+@keyframes staggerFade{
+  to{opacity:1;transform:none}
+}
+
+/* grid products */
+.main{display:grid;grid-template-columns:1fr;gap:18px;margin-top:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+  padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+  transition:transform .32s cubic-bezier(.25,.8,.25,1), box-shadow .32s ease;
+}
+.card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(6,8,20,0.6)}
+.card h3{margin:0 0 8px 0}
+.muted{color:var(--muted);font-size:13px}
+.price{font-weight:800;color:var(--accent2);font-size:18px}
+
+/* buttons */
+.btn{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#061018;padding:8px 12px;border-radius:10px;border:0;
+  cursor:pointer;font-weight:800;
+  transition:transform .25s cubic-bezier(.25,.8,.25,1), box-shadow .25s ease;
+}
+.btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 6px 16px rgba(0,0,0,0.4)}
+.btn:active{transform:scale(.95)}
+.btn.tiny{padding:6px 8px;font-size:13px;border-radius:8px}
+
+/* sidebar */
+.sidebarBack{
+  position:fixed;inset:0;display:none;
+  background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .3s ease;z-index:80
+}
+.sidebarBack.show{display:block;opacity:1}
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:320px;max-width:86vw;
+  background:linear-gradient(180deg,#071124,#091428);
+  padding:16px;border-right:1px solid rgba(255,255,255,0.05);
+  border-top-right-radius:12px;border-bottom-right-radius:12px;
+  box-shadow:8px 0 30px rgba(0,0,0,0.6);
+  transform:translateX(-110%) scale(0.96);opacity:0;
+  transition:transform .45s cubic-bezier(.25,.8,.25,1), opacity .45s ease;
+  z-index:90
+}
+.sidebar.open{transform:translateX(0) scale(1);opacity:1}
+.sidebar h3{margin:0 0 8px 0}
+.historyList{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto;padding-right:6px}
+.histItem{
+  background:var(--glass);padding:10px;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.02);cursor:pointer;
+  transition:transform .2s cubic-bezier(.25,.8,.25,1), box-shadow .2s ease;
+}
+.histItem:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.4)}
+.histItem:active{transform:translateY(2px)}
+
+/* overlay modal */
+.overlay{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  z-index:120;opacity:0;transition:opacity .35s ease;padding:16px
+}
+.overlay.open{display:flex;opacity:1}
+.modal{
+  width:100%;max-width:880px;background:linear-gradient(180deg,#071022,#0b0f1c);
+  padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 24px 60px rgba(0,0,0,0.6);
+  transform:translateY(20px) scale(0.96);
+  opacity:0;
+  transition:transform .4s cubic-bezier(.25,.8,.25,1), opacity .4s ease;
+}
+.overlay.open .modal{transform:translateY(0) scale(1);opacity:1}
+.modalHeader{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.modalBody{margin-top:12px}
+
+/* form */
+.field{margin-top:10px}
+input,select,textarea{
+  width:100%;padding:12px;border-radius:10px;
+  border:1px solid rgba(255,255,255,0.03);
+  background:transparent;color:#eaf3ff
+}
+
+/* QR area */
+.qrBox{
+  margin-top:12px;background:rgba(255,255,255,0.02);
+  padding:12px;border-radius:10px;text-align:center;
+  transition:opacity .35s ease, transform .35s cubic-bezier(.25,.8,.25,1);
+}
+img.qr{width:280px;height:280px;border-radius:10px;max-width:86vw}
+
+/* panel data */
+.panelData{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.chip{
+  background:rgba(255,255,255,0.03);
+  padding:8px;border-radius:10px;
+  display:inline-flex;gap:8px;align-items:center
+}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.countdown{font-weight:800;color:var(--accent2);font-size:18px}
+.mutedSmall{color:var(--muted);font-size:13px}
+.footer{margin-top:26px;text-align:center;color:var(--muted);font-size:13px}
+
+/* toast notif */
+#toast{
+  position:fixed;left:50%;bottom:60px;
+  transform:translateX(-50%) translateY(20px);
+  background:rgba(20,20,28,0.9);color:#fff;
+  padding:12px 18px;border-radius:12px;
+  font-size:14px;font-weight:600;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  opacity:0;pointer-events:none;
+  transition:opacity .35s ease, transform .35s cubic-bezier(.25,.8,.25,1);
+  z-index:200
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* animations */
+.fadeIn{animation:fadeIn .4s cubic-bezier(.25,.8,.25,1) both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.fadeOut{animation:fadeOutAnim .4s cubic-bezier(.25,.8,.25,1) both}
+@keyframes fadeOutAnim{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(8px) scale(0.96)}}
+
+/* panel card */
+.panelCard{
+  border-radius:16px;
+  padding:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 12px 30px rgba(3,8,20,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  transition:transform .32s cubic-bezier(.25,.8,.25,1), box-shadow .32s ease, opacity .28s ease;
+  opacity:1;will-change:transform,opacity;
+}
+.panelCard:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(3,8,20,0.75)}
+.panelCard .pc-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.panelCard .pc-title{font-weight:800;font-size:16px;letter-spacing:0.3px}
+.panelCard .pc-badge{font-size:13px;padding:6px 10px;border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));color:#061018;font-weight:800}
+.panelCard .chip{background:rgba(255,255,255,0.03);padding:10px 12px;border-radius:12px;display:inline-flex;gap:10px;align-items:center;font-weight:600;border:1px solid rgba(255,255,255,0.02);min-width:120px}
+.panelCard .mutedSmall{color:var(--muted);font-size:13px}
+.panelCard .tc{margin-top:14px;padding-top:12px;border-top:1px dashed rgba(255,255,255,0.03);font-size:13px;color:var(--muted);line-height:1.4}
+
+#openInfo:hover {
+  text-decoration: underline;
+  color: var(--accent);
+}
+
+.panelModal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.4s ease;
+}
+
+.panelCard {
+  width: 380px;
+  background: #111;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 0 30px #0ff, inset 0 0 15px #f0f;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  animation: zoomIn 0.5s ease;
+}
+
+.panelCard .titleCyber {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #0ff;
+  text-shadow: 0 0 10px #0ff, 0 0 20px #f0f;
+}
+
+.panelCard .infoLine {
+  margin: 12px 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panelCard .infoLine button {
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+  font-size: 12px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.panelCard .infoLine button:hover {
+  background: #0ff;
+  color: #000;
+}
+
+.actionsCyber {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btnCyber {
+  flex: 1;
+  margin: 0 5px;
+  background: linear-gradient(270deg, #0ff, #f0f, #ff0);
+  background-size: 600% 600%;
+  animation: cyberAnim 8s ease infinite;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btnCyber.danger {
+  background: linear-gradient(270deg, #f00, #f0f);
+  color: #fff;
+}
+
+@keyframes cyberAnim {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.7); opacity: 0; } 
+  to { transform: scale(1); opacity: 1; }
+}
+
+.successModal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.4s ease;
+}
+
+.successBox {
+  background: #111;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  color: #0f0;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 30px #0f0, inset 0 0 20px #060;
+  width: 350px;
+  animation: zoomIn 0.5s ease;
+}
+
+.successBox h2 {
+  margin: 15px 0 10px;
+  font-size: 22px;
+  color: #0f0;
+}
+
+.successBox p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #ddd;
+}
+
+.successBox .actions button {
+  background: #0f0;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+  transition: 0.2s;
+}
+
+.successBox .actions button:hover {
+  background: #5f5;
+}
+
+/* ✅ Centang animasi */
+.checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 5px #0f0 inset;
+  position: relative;
+  animation: popIn 0.4s ease;
+  margin-bottom: 15px;
+}
+
+.checkmark_stem {
+  width: 6px;
+  height: 30px;
+  background-color: #0f0;
+  display: block;
+  position: absolute;
+  left: 36px;
+  top: 18px;
+  transform: rotate(45deg) scaleY(0);
+  transform-origin: top left;
+  animation: drawStem 0.4s ease forwards 0.3s;
+}
+
+.checkmark_kick {
+  width: 6px;
+  height: 15px;
+  background-color: #0f0;
+  display: block;
+  position: absolute;
+  left: 24px;
+  top: 42px;
+  transform: rotate(-45deg) scaleY(0);
+  transform-origin: top right;
+  animation: drawKick 0.3s ease forwards 0.7s;
+}
+
+@keyframes fadeIn { from {opacity:0} to {opacity:1} }
+@keyframes zoomIn { from {transform:scale(0.7);opacity:0} to {transform:scale(1);opacity:1} }
+@keyframes popIn { from {transform:scale(0)} to {transform:scale(1)} }
+@keyframes drawStem { to { transform: rotate(45deg) scaleY(1); } }
+@keyframes drawKick { to { transform: rotate(-45deg) scaleY(1); } }
+
+.historyDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cyberCardDetail {
+  background: #111;
+  border: 1px solid #0ff;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 0 15px #0ff, inset 0 0 10px #f0f;
+  margin-top: 10px;
+  animation: zoomIn 0.4s ease;
+}
+
+.cyberField {
+  margin: 8px 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cyberField button {
+  background: transparent;
+  border: 1px solid #0ff;
+  color: #0ff;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cyberField button:hover {
+  background: #0ff;
+  color: #000;
+}
+
+.btnCyber {
+  background: linear-gradient(270deg, #0ff, #f0f, #ff0);
+  background-size: 600% 600%;
+  animation: cyberAnim 8s ease infinite;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@keyframes cyberAnim {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; } 
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* responsive */
+@media(max-width:880px){
+  .grid{grid-template-columns:repeat(1,1fr)}
+  .sidebar{width:86vw}
+}
+</style>
+</head>
+<body>
+ <div class="wrap">
+  <!-- HEADER -->
+  <header class="dashHeader">
+    <div class="dashLeft">
+      <div id="hamb" class="hamb" title="History">☰</div>
+      <div class="titleWrap">
+        <h1 class="dashTitle">Panel Pterodactyl </h1>
+        <div class="dashSub">Pembayaran otomatis via QRIS</div>
+      </div>
+    </div>
+    <div class="dashRight">
+      <div class="logoWrap" title="Wanz Official">
+        <img src="https://files.catbox.moe/a8uk9h.jpg" alt="Wanz Logo" />
+      </div>
+    </div>
+  </header>
+
+  <!-- INFO DEVICE / USER -->
+  <section class="infoCards">
+    <div class="infoCard">
+      <div class="ic-label">Status Panel</div>
+      <div id="infoStatus" class="ic-value" style="color:var(--accent2)">Loading...</div>
+    </div>
+    <div class="infoCard">
+      <div class="ic-label">IP Address</div>
+      <div id="infoIP" class="ic-value">-</div>
+    </div>
+    <div class="infoCard">
+      <div class="ic-label">Baterai</div>
+      <div id="infoBattery" class="ic-value">-</div>
+    </div>
+    <div class="infoCard">
+      <div class="ic-label">Total Order</div>
+      <div id="infoOrders" class="ic-value">0</div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <section>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+  <div style="display:flex;flex-direction:column">
+    <div style="font-weight:800;font-size:16px">
+      Pilih Paket -
+      <span id="openInfo" style="color:var(--accent2);cursor:pointer;font-size:14px">
+        apa itu server panel?
+      </span>
+    </div>
+    <div class="mutedSmall"></div>
+  </div>
+</div>
+        
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+    <div class="footer">2025 • Wanz Official</div>
+  </main>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebarBack" class="sidebarBack"></div>
+<aside id="sidebar" class="sidebar" aria-hidden="true">
+  <button id="closeSidebar" style="background:transparent;border:0;color:var(--muted);font-weight:800;float:right;cursor:pointer">✕</button>
+  <h3>History Pesanan</h3>
+  <div class="mutedSmall" style="margin-bottom:8px">Klik item untuk lihat detail.</div>
+  <div id="historyList" class="historyList"></div>
+  <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+    <button id="clearHistory" class="btn tiny" style="background:#ff7b7b">Hapus semua</button>
+  </div>
+</aside>
+
+<!-- MODAL PURCHASE -->
+<div id="overlay" class="overlay" aria-hidden="true">
+  <div class="modal fadeIn" role="dialog" aria-modal="true">
+    <div class="modalHeader">
+      <div>
+        <div id="modalTitle" style="font-weight:800">Beli panel</div>
+        <div id="modalSub" class="mutedSmall">Isi username lalu klik Beli server</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="modalStatus" class="mutedSmall"></div>
+        <button id="closeModal" class="btn tiny">Tutup</button>
+      </div>
+    </div>
+
+    <div class="modalBody">
+      <div class="field">
+        <label style="font-size:13px;color:var(--muted)">Username server</label>
+        <input id="inputUser" placeholder="username (3-15)" autocomplete="username" />
+      </div>
+
+      <div class="field" style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="mutedSmall">Keterangan Paket</div>
+            <div id="pkgDesc" style="font-weight:800"></div>
+          </div>
+          <div style="text-align:right">
+            <div id="pkgPrice" class="price"></div>
+            <div class="mutedSmall" style="margin-top:4px">
+              Bergaransi <span id="pkgExpiredNote">1x replace</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnBuy" class="btn">Beli server</button>
+      </div>
+
+      <div id="qrWrap" class="qrBox" style="display:none">
+        <div id="qrInfo" class="mutedSmall"></div>
+        <div id="qrArea" style="margin-top:10px;text-align:center">
+          <img id="qrImg" class="qr" src="" alt="QRIS" style="display:block;margin:0 auto" />
+        </div>
+        <div style="margin-top:12px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+          <div class="countdown" id="countdown">15:00</div>
+          <button id="btnDownload" class="btn tiny">Download QR</button>
+          <button id="btnRefresh" class="btn tiny">Refresh</button>
+          <button id="btnCancel" class="btn tiny" style="background:#e74c3c;display:none">❌ Batal</button>
+        </div>
+        <div id="panelResult" class="panelResult" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP HISTORY DETAIL -->
+<div id="detailOverlay" class="overlay" aria-hidden="true">
+  <div class="modal fadeIn" style="max-width:780px">
+    <div class="modalHeader">
+      <div>
+        <div id="detailTitle" style="font-weight:800">Detail</div>
+        <div id="detailSub" class="mutedSmall"></div>
+      </div>
+      <div><button id="closeDetail" class="btn tiny">Tutup</button></div>
+    </div>
+    <div class="modalBody" id="detailBody" style="max-height:60vh;overflow:auto"></div>
+  </div>
+</div>
+
+<!-- Popup Info Server Panel -->
+<div id="infoOverlay" class="overlay" aria-hidden="true">
+  <div class="modal fadeIn" style="max-width:800px;max-height:90vh;overflow:auto">
+    <div class="modalHeader">
+      <div>
+        <div style="font-weight:800;font-size:18px">Tentang Server Panel</div>
+      </div>
+      <div>
+        <button id="closeInfo" class="btn tiny">Tutup</button>
+      </div>
+    </div>
+
+    <div class="modalBody" style="font-size:14px;line-height:1.6;color:var(--muted)">
+      
+      <!-- 1. Tentang -->
+      <h3 style="color:#fff;margin-top:0">Apa itu Panel Pterodactyl?</h3>
+<p>
+  Panel Pterodactyl adalah sebuah <b>dashboard berbasis web</b> yang berfungsi untuk 
+  <b>membuat, mengelola, dan memonitor server</b> secara praktis tanpa harus ribet pakai terminal. 
+  Panel ini biasanya digunakan untuk game server, tapi juga sangat cocok untuk 
+  menjalankan <b>bot WhatsApp, bot Telegram, dan aplikasi otomatisasi lainnya</b>. 
+</p>
+<p>
+  Dengan panel ini, Anda bisa dengan mudah:
+</p>
+<ul style="padding-left:18px;margin:6px 0">
+  <li>Mengelola resource server (CPU, RAM, Storage) agar bot berjalan stabil.</li>
+  <li>Mengupload file bot atau script melalui File Manager bawaan.</li>
+  <li>Mengontrol bot (Start, Stop, Restart) hanya dengan satu klik.</li>
+  <li>Memantau log / aktivitas bot secara real-time langsung dari dashboard.</li>
+</ul>
+<p style="margin-top:6px">
+  Intinya, dengan <b>Pterodactyl Panel</b>, Anda bisa menjalankan dan memantau bot 
+  WhatsApp atau Telegram Anda secara full-time, tanpa perlu laptop/PC online 24 jam. 
+  Semua diatur lewat satu dashboard modern dan aman.
+</p>
+
+      <!-- 2. Langkah pembelian -->
+      <h3 style="color:#fff;margin-top:20px">Cara Pembelian</h3>
+      <ol style="padding-left:20px;margin:8px 0">
+        <li><b>Pilih paket</b> yang sesuai kebutuhan Anda.</li>
+        <li><b>Isi username</b> untuk akun panel (3–15 karakter).</li>
+        <li>Klik tombol <b>Beli server</b> → sistem menampilkan <b>QRIS</b> untuk pembayaran.</li>
+        <li>Scan QRIS menggunakan aplikasi bank atau e-wallet.</li>
+        <li>Setelah pembayaran berhasil, sistem otomatis membuat panel & menampilkan kredensial login.</li>
+        <li>Catat kredensial atau klik selesai. Panel siap digunakan.</li>
+      </ol>
+      <p style="margin-top:6px;font-size:13px">
+        ⏱️ Proses pembuatan panel biasanya hanya <b>1–3 menit</b> setelah pembayaran terkonfirmasi.
+      </p>
+
+      <!-- 3. Syarat & Ketentuan -->
+      <h3 style="color:#fff;margin-top:20px">Syarat & Ketentuan</h3>
+      <ul style="padding-left:18px;margin:8px 0">
+        <li>Dilarang menyebarkan akses server panel kepada pihak lain.</li>
+        <li>Dilarang memasang atau menjalankan script berbahaya (DDoS, malware, dsb).</li>
+        <li>Dilarang melakukan serangan ke server lain menggunakan layanan ini.</li>
+        <li>Pelanggaran dapat mengakibatkan suspend atau penghapusan akun tanpa refund.</li>
+        <li>Jika ada kendala hubungi admin: <b>+6283898206223</b>.</li>
+      </ul>
+
+      <!-- 4. Kebijakan Privasi -->
+      <h3 style="color:#fff;margin-top:20px">Kebijakan Privasi</h3>
+      <p>
+        Kami hanya mengumpulkan data yang diperlukan untuk membuat akun dan layanan panel,
+        seperti username dan status pembayaran. 
+        Data tidak akan dibagikan ke pihak ketiga kecuali diminta oleh hukum yang berlaku. 
+        Pengguna dapat menghubungi admin untuk permintaan penghapusan data atau pertanyaan terkait privasi.
+      </p>
+      <h3 style="color:#fff;margin-top:20px">⚠️PENTING</h3>
+      <p>
+        Harap perhatikan status server panel!
+        Jika server online, artinya produk tersedia dan bisa melakukan transaksi dan
+        Jika server offline, artinya panel belum dikonfigurasi atau produk belum tersedia!
+        Kami tidak bertanggung jawab atas kelalaian anda saat melakukan transaksi! - be a smart buyer
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast">
+  <div id="toastText">Pesan Notif</div>
+</div>
+
+  <script>
+// ✅ Perbaikan checkServerStatus agar sinkron dengan infoCards
+async function checkServerStatus() {
+  const infoStatus = document.getElementById("infoStatus");
+
+  try {
+    const res = await fetch("/api/database?action=status");
+    const data = await res.json();
+
+    if (data.status === "online") {
+      infoStatus.textContent = "Server Online";
+      infoStatus.style.color = "#00ffd1"; // accent2
+    } else {
+      infoStatus.textContent = "Server Offline";
+      infoStatus.style.color = "#ff7b7b"; // danger
+    }
+  } catch (e) {
+    infoStatus.textContent = "Server Offline";
+    infoStatus.style.color = "#ff7b7b";
+  }
+}
+
+    // ---------- DATA ----------
+    const PACKAGES = {
+      "1gb":  { ram:1024,  disk:10240,  cpu:100,  name:"1 GB",  price:1000,  desc:"Paket starter untuk belajar & testing" },
+      "2gb":  { ram:2048,  disk:20480,  cpu:200,  name:"2 GB",  price:2000,  desc:"Cocok untuk bot sederhana & website kecil" },
+      "3gb":  { ram:3072,  disk:30720,  cpu:300,  name:"3 GB",  price:3000,  desc:"Stabil untuk website medium & API" },
+      "4gb":  { ram:4096,  disk:40960,  cpu:400,  name:"4 GB",  price:4000,  desc:"Performa bagus untuk aplikasi yang lebih berat" },
+      "5gb":  { ram:5120,  disk:51200,  cpu:500,  name:"5 GB",  price:5000,  desc:"Powerful untuk server game kecil & aplikasi besar" },
+      "6gb":  { ram:6144,  disk:61440,  cpu:600,  name:"6 GB",  price:5600,  desc:"Tangguh untuk website traffic tinggi" },
+      "7gb":  { ram:7168,  disk:71680,  cpu:700,  name:"7 GB",  price:6700,  desc:"Cocok untuk sistem menengah ke atas" },
+      "8gb":  { ram:8192,  disk:81920,  cpu:800,  name:"8 GB",  price:7800,  desc:"Ideal untuk e-commerce & sistem besar" },
+      "9gb":  { ram:9216,  disk:92160,  cpu:900,  name:"9 GB",  price:8900,  desc:"Performa tinggi untuk project demanding" },
+      "10gb": { ram:10240, disk:102400, cpu:1000, name:"10 GB", price:9100, desc:"Maximal untuk project enterprise & layanan besar" },
+      "unlimited": { ram:0, disk:0, cpu:0, name:"Unlimited", price:10000, desc:"Paket tanpa batas untuk full performance" },
+      "reseller":  { ram:0, disk:0, cpu:0, name:"Reseller", price:15000, desc:"Khusus reseller — manual handling" }
+    };
+
+    // ---------- ELEMENTS ----------
+    // Popup "apa itu server panel?"
+const openInfo = document.getElementById("openInfo");
+const infoOverlay = document.getElementById("infoOverlay");
+const closeInfo = document.getElementById("closeInfo");
+
+openInfo.addEventListener("click", () => {
+  infoOverlay.classList.add("open");
+});
+
+closeInfo.addEventListener("click", () => {
+  infoOverlay.classList.remove("open");
+});
+    const grid = document.getElementById('grid');
+    const hamb = document.getElementById('hamb');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBack = document.getElementById('sidebarBack');
+    const closeSidebar = document.querySelector('#sidebar button');
+    const historyList = document.getElementById('historyList');
+    const clearHistory = document.getElementById('clearHistory');
+    const statusBox = document.getElementById('statusBox');
+    const statusText = document.getElementById('statusText');
+    const btnRefreshStatus = document.getElementById('btnRefreshStatus');
+
+    const overlay = document.getElementById('overlay');
+    const closeModal = document.getElementById('closeModal');
+    const inputUser = document.getElementById('inputUser');
+    const pkgDesc = document.getElementById('pkgDesc');
+    const pkgPrice = document.getElementById('pkgPrice');
+    const btnBuy = document.getElementById('btnBuy');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalStatus = document.getElementById('modalStatus');
+
+    const detailOverlay = document.getElementById('detailOverlay');
+    const detailBody = document.getElementById('detailBody');
+    const closeDetail = document.getElementById('closeDetail');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSub = document.getElementById('detailSub');
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+
+    // ---------- STATE ----------
+    let current = null; // { key, pkg, trxId, expiresAt, pollTimer, countdownTimer }
+    const STORAGE_KEY = 'wanz_store_history_v2';
+
+    // ---------- UTIL ----------
+    function showToast(msg, t=3000){
+  toastText.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  }, t);
+}
+
+    function nowISO(){ return new Date().toISOString(); }
+    function fmtWIB(iso){
+      try{ return new Date(iso).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}); } catch(e){ return iso; }
+    }
+
+    function loadHistory(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e){ return []; } }
+    function saveHistory(h){ localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+    function pushHistory(item){ const h = loadHistory(); h.unshift(item); if(h.length>200) h.pop(); saveHistory(h); renderHistory(); }
+
+    function renderHistory(){
+      const h = loadHistory();
+      historyList.innerHTML = '';
+      if(!h.length){ historyList.innerHTML = '<div class="mutedSmall">Belum ada history</div>'; return; }
+      h.forEach(it=>{
+        const el = document.createElement('div');
+        el.className = 'histItem';
+        el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong>${it.pkgName}</strong>
+            <div class="mutedSmall">${it.username || '-'} • ${it.status}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="mutedSmall">${it.timeWIB || '-'}</div>
+          </div>
+        </div>`;
+        el.addEventListener('click', ()=> openHistoryDetail(it));
+        historyList.appendChild(el);
+      });
+    }
+    
+    function updateOrderCount(){
+  try {
+    const history = JSON.parse(localStorage.getItem('history')||'[]');
+    const paidOrders = history.filter(h => h.status === 'paid');
+    const el = document.querySelector('#infoOrders');
+    if(el) el.textContent = paidOrders.length;
+  } catch(e){
+    console.warn('updateOrderCount error', e);
+  }
+}
+
+    function openHistoryDetail(item){
+  detailTitle.textContent = `${item.pkgName} — ${item.status}`;
+  detailSub.textContent = item.timeWIB || '';
+
+  let html = `<div class="historyDetail">`;
+  html += `<div class="infoLine">👤 Username: <span>${item.username||'-'}</span></div>`;
+
+  if(item.panel){
+    const p = item.panel;
+
+    html += `
+      <div class="infoLine">🖥️ Server ID: <span>${p.serverId||'-'}</span></div>
+      <div class="infoLine">🆔 User ID: <span>${p.userId||'-'}</span></div>
+    `;
+
+    html += `
+      <div class="cyberCardDetail">
+        <div class="cyberField">
+          <strong>Username:</strong> ${p.username||'-'} 
+          <button onclick="copyText('${escapeSingle(p.username)}')">Copy</button>
+        </div>
+        <div class="cyberField">
+          <strong>Password:</strong> ${p.password||'-'} 
+          <button onclick="copyText('${escapeSingle(p.password||'')}')">Copy</button>
+        </div>
+        <div class="cyberField">
+          <strong>Login Panel:</strong> 
+          <button onclick="window.open('${escapeSingle(p.domain)}/auth/login','_blank')">🔗 Login</button>
+        </div>
+        <div style="margin-top:10px;text-align:center">
+          <button class="btnCyber" onclick="copyAll(${encodeURIComponent(JSON.stringify(p))})">📋 Copy All</button>
+        </div>
+      </div>
+    `;
+  } else {
+    html += `<div class="mutedSmall">Belum ada panel (pending / expired)</div>`;
+  }
+
+  html += `</div>`;
+  detailBody.innerHTML = html;
+  detailOverlay.classList.add('open');
+  detailOverlay.setAttribute('aria-hidden','false');
+}
+
+    function closeDetailFn(){ detailOverlay.classList.remove('open'); detailOverlay.setAttribute('aria-hidden','true'); }
+    closeDetail.addEventListener('click', closeDetailFn);
+    detailOverlay.addEventListener('click', (e)=>{ if(e.target===detailOverlay) closeDetailFn(); });
+
+    function escapeSingle(s){ if(!s) return ''; return String(s).replace(/'/g,"\\'").replace(/"/g,'\\"'); }
+    window.copyText = async function(s){ if(!s) return showToast('Tidak ada data'); try{ await navigator.clipboard.writeText(s); showToast('Disalin ke clipboard') }catch(e){ showToast('Gagal salin') } }
+    window.copyAll = function(encoded){ try{ const p = JSON.parse(decodeURIComponent(encoded)); navigator.clipboard.writeText(JSON.stringify(p,null,2)); showToast('Semua data disalin'); }catch(e){ showToast('Gagal copy all') } }
+
+    // ---------- render products ----------
+    function renderProducts(){
+      grid.innerHTML = '';
+      Object.keys(PACKAGES).forEach(k=>{
+        const p = PACKAGES[k];
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<h3>${p.name}</h3>
+          <div class="muted">${p.desc}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <div>
+              <div class="price">Rp${Number(p.price).toLocaleString('id-ID')}</div>
+              <div class="mutedSmall">RAM ${p.ram? (p.ram/1024)+' GB' : 'Unlimited'} • Disk ${p.disk? (p.disk/1024)+' GB' : 'Unlimited'}</div>
+            </div>
+            <div><button class="btn" data-key="${k}">Detail</button></div>
+          </div>`;
+        grid.appendChild(card);
+      });
+      grid.querySelectorAll('button.btn').forEach(b=> b.addEventListener('click', e=> openModal(e.currentTarget.dataset.key)));
+    }
+
+    // ---------- modal controls ----------
+    function openModal(key){
+      const p = PACKAGES[key];
+      current = { key, pkg: p, trxId: null, expiresAt: null, pollTimer: null, countdownTimer: null };
+      modalTitle.textContent = `Beli: ${p.name}`;
+      pkgDesc.textContent = p.desc;
+      pkgPrice.textContent = `Rp${Number(p.price).toLocaleString('id-ID')}`;
+      inputUser.value = '';
+      panelResult.innerHTML = '';
+      qrWrap.style.display = 'none';
+      modalStatus.textContent = '';
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden','false');
+    }
+
+    function closeModalFn(){
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden','true');
+      stopPolling();
+    }
+    closeModal.addEventListener('click', closeModalFn);
+    overlay.addEventListener('click',(e)=>{ if(e.target===overlay) closeModalFn() });
+
+    
+    
+    
+
+    btnBuy.addEventListener("click", ()=>{
+  if(!current) return showToast("Pilih paket dulu");
+  const username = inputUser.value.trim();
+  if(!/^[a-zA-Z0-9_]{3,15}$/.test(username)) {
+    return showToast("Username invalid (3-15 chars)");
+  }
+
+  // redirect ke halaman pembayaran
+  const url = `/payment.html?pkg=${encodeURIComponent(current.key)}&username=${encodeURIComponent(username)}`;
+  window.location.href = url;
+});
+
+
+// ---------- history helpers ----------
+function updateHistoryStatus(id, status, extra = {}){
+  const h = loadHistory();
+  const idx = h.findIndex(x => x.id === id);
+  const timeWIB = fmtWIB(nowISO());
+  if(idx === -1){
+    const item = Object.assign({ id, status, timeWIB }, extra);
+    if(current && current.pkg) item.pkgName = current.pkg.name;
+    pushHistory(item);
+    return;
+  }
+  h[idx] = Object.assign({}, h[idx], { status, timeWIB }, extra);
+  saveHistory(h);
+  renderHistory();
+}
+
+clearHistory.addEventListener('click', ()=>{
+  if(confirm('Hapus semua history?')){
+    localStorage.removeItem(STORAGE_KEY);
+    renderHistory();
+    showToast('History dibersihkan');
+  }
+});
+
+    
+    
+    // ---------- sidebar controls ----------
+hamb.addEventListener('click', ()=>{
+  sidebar.classList.add('open');
+  sidebarBack.classList.add('show');
+  sidebar.setAttribute('aria-hidden','false');
+});
+
+closeSidebar.addEventListener('click', closeSidebarFn);
+sidebarBack.addEventListener('click', closeSidebarFn);
+
+function closeSidebarFn(){
+  sidebar.classList.remove('open');
+  sidebarBack.classList.remove('show');
+  sidebar.setAttribute('aria-hidden','true');
+}
+
+    // ---------- init ----------
+    renderProducts();
+    renderHistory();
+    checkServerStatus();
+    
+
+    setInterval(checkServerStatus, 30000);
+    
+    window.addEventListener("load", () => {
+  loadUserIP();
+  loadBatteryStatus();
+});
+
+    // ---------- small helpers ----------
+    function downloadBlob(url){ const a=document.createElement('a'); a.href=url; a.click(); a.remove(); }
+    function escapeHtml(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    // ---------- copy fallback for encoded JSON in detail (exposed to window copyAll) ----------
+    window.copyAll = function(encoded){ try{ const p = JSON.parse(decodeURIComponent(encoded)); navigator.clipboard.writeText(JSON.stringify(p,null,2)); showToast('Copied all'); }catch(e){ showToast('Fail copy all') } }
+
+    // expose some functions to global for inline onclicks used in dynamic HTML
+    window.copyText = window.copyText;
+    window.copyAll = window.copyAll;
+    
+    // set panel status (default: online, nanti bisa diambil dari API kalau ada)
+document.getElementById('panelStatus').textContent = 'Online';
+document.getElementById('cardStatus').querySelector('.ic-icon').textContent = '🟢';
+
+// get IP address
+fetch("https://api.ipify.org?format=json")
+  .then(res=>res.json())
+  .then(data=>{
+    document.getElementById('userIp').textContent = data.ip;
+  })
+  .catch(()=>{ document.getElementById('userIp').textContent = 'Unavailable'; });
+
+// get battery status
+if(navigator.getBattery){
+  navigator.getBattery().then(battery=>{
+    function updateBattery(){
+      let percent = Math.round(battery.level*100) + "%";
+      let charging = battery.charging ? "Charging" : "Not charging";
+      document.getElementById('userBattery').textContent = `${percent} (${charging})`;
+    }
+    updateBattery();
+    battery.addEventListener('levelchange', updateBattery);
+    battery.addEventListener('chargingchange', updateBattery);
+  });
+}else{
+  document.getElementById('userBattery').textContent = "Unavailable";
+}
+
+// total orders sukses
+function countOrders(){
+  const h = loadHistory();
+  const success = h.filter(x => x.status==='paid' || x.status==='done').length;
+  document.getElementById('userOrders').textContent = success;
+}
+countOrders();
+
+async function updateTotalOrders() {
+  try {
+    const res = await fetch('/api/database?action=total-orders');
+    const data = await res.json();
+    document.getElementById("totalOrders").textContent = data.total;
+  } catch (e) {
+    console.error("Gagal ambil total order global:", e);
+  }
+}
+
+updateTotalOrders();
+setInterval(updateTotalOrders, 10000); // auto refresh tiap 10 detik
+
+async function loadBatteryStatus() {
+  try {
+    const battery = await navigator.getBattery();
+    updateBattery(battery);
+
+    // Update jika status berubah
+    battery.addEventListener("levelchange", () => updateBattery(battery));
+    battery.addEventListener("chargingchange", () => updateBattery(battery));
+  } catch (e) {
+    document.getElementById("infoBattery").textContent = "Tidak tersedia";
+  }
+
+  function updateBattery(battery) {
+    const level = Math.round(battery.level * 100) + "%";
+    const charging = battery.charging ? " (Charging)" : "";
+    document.getElementById("infoBattery").textContent = level + charging;
+  }
+}
+
+async function loadUserIP() {
+  try {
+    const res = await fetch("https://api.ipify.org?format=json");
+    const data = await res.json();
+    document.getElementById("infoIP").textContent = data.ip;
+  } catch (e) {
+    document.getElementById("infoIP").textContent = "Tidak terdeteksi";
+  }
+}
+
+
+
+
+  </script>
+</body>
+</html>
