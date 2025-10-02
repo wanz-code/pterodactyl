@@ -35,7 +35,7 @@ const config = {
 
 // ----------------------------- PACKAGES (1GB -> 10GB + unlimited + reseller) -----------------------------
 const PACKAGES = {
-  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 1,  desc: "Paket starter untuk belajar & testing" },
+  "1gb":  { ram: 1024,  disk: 10240,   cpu: 100,  name: "1 GB",  price: 560,  desc: "Paket starter untuk belajar & testing" },
   "2gb":  { ram: 2048,  disk: 20480,   cpu: 200,  name: "2 GB",  price: 2000,  desc: "Cocok untuk bot sederhana & website kecil" },
   "3gb":  { ram: 3072,  disk: 30720,   cpu: 300,  name: "3 GB",  price: 3000,  desc: "Stabil untuk website medium & API" },
   "4gb":  { ram: 4096,  disk: 40960,   cpu: 400,  name: "4 GB",  price: 4000,  desc: "Performa bagus untuk aplikasi yang lebih berat" },
