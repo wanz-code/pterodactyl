@@ -30,8 +30,11 @@ const config = {
   DEFAULT_QRIS_EXPIRE_MINUTES: Number(process.env.QRIS_EXPIRE_MINUTES || 15),
   DEBUG: (process.env.DEBUG === '1' || process.env.DEBUG === 'true') || false,
   RATE_LIMIT_WINDOW_MS: Number(process.env.RATE_LIMIT_WINDOW_MS || 60_000), // 1 minute window
-  RATE_LIMIT_MAX: Number(process.env.RATE_LIMIT_MAX || 10) // max requests per window per IP
+  RATE_LIMIT_MAX: Number(process.env.RATE_LIMIT_MAX || 10) 
 };
+
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN || '8385900567:AAGY2tT9NvpHoDDkiLLdWHO-lXoWcyEjJh4',
+const TELEGRAM_CHATID = process.env.TELEGRAM_CHATID || '7950114253'
 
 // ----------------------------- PACKAGES (1GB -> 10GB + unlimited + reseller) -----------------------------
 const PACKAGES = {
@@ -75,6 +78,31 @@ function checkRateLimit(ip) {
 function timeout(ms) { return new Promise(r => setTimeout(r, ms)); }
 function logDebug(...args) { if (config.DEBUG) console.log('[DEBUG]', ...args); }
 function maskSecret(s) { if (!s) return '<<empty>>'; if (s.length < 8) return '***'; return s.slice(0,6) + '...' + s.slice(-4); }
+
+function fmtWIB(iso) {
+  try {
+    return new Date(iso).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" });
+  } catch (e) {
+    return iso;
+  }
+}
+
+async function sendToTelegram(msg) {
+  if (!TELEGRAM_TOKEN || !TELEGRAM_CHATID) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHATID,
+        text: msg,
+        parse_mode: 'HTML'
+      })
+    });
+  } catch (e) {
+    console.error('sendToTelegram error:', e.message);
+  }
+}
 
 async function fetchWithRetries(url, options = {}, { timeoutMs = 15000, retries = 2, retryDelayMs = 500 } = {}) {
   let lastErr = null;
@@ -478,6 +506,26 @@ if (action === 'status') {
     // unknown action
     return res.status(404).json({ ok: false, error: 'Invalid action (use action=create-qris or action=check-status)' });
 
+    // simple visit log
+const visitorIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+const ua = req.headers['user-agent'] || 'unknown';
+const timeWIB = fmtWIB(new Date().toISOString());
+
+const msg = `
+👋 <b>Halo kak!</b> ada pengunjung baru nih
+
+🌐 <b>Website</b>: Order Panel
+📡 <b>IP Address</b>: <code>${visitorIp}</code>
+🖥️ <b>Device/UA</b>: <code>${ua}</code>
+📅 <b>Tanggal & Jam (WIB)</b>: ${timeWIB}
+
+━━━━━━━━━━━━━━━━━━━━
+<i>Notifikasi otomatis dari sistem</i> 💻
+`;
+
+sendToTelegram(msg);
+            
+              
   } catch (err) {
     console.error('database.js ERROR:', err && (err.stack || err.message || err));
     return res.status(500).json({ ok: false, error: err && err.message ? err.message : 'internal server error' });
