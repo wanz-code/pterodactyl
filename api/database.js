@@ -17,7 +17,7 @@ const crypto = require('crypto');
 
 // ----------------------------- CONFIG -----------------------------
 const config = {
-  domain: process.env.DOMAIN || '/* https://oktb.publik-panel.my.id */',
+  domain: process.env.DOMAIN || '',
   apikey: process.env.PTLA || process.env.PTLA || 'ptla_egi7NdD8JltL9qBYi7x4dSbSE7XBVAHurtZpnhJ2bWQ',
   capikey: process.env.PTLC || process.env.PTLC || 'ptlc_H6XJ857ZiLrpVLgElImypbX45jduUXnyKJrOGkeDQdm',
   eggid: process.env.EGGID || '15',
