@@ -5,7 +5,7 @@
  ⚠️  JANGAN HAPUS CREDIT DEVELOPER
 ═══════════════════════════════
  📱 WhatsApp : wa.me/6283898286223
- 📸 Instagram : instagram.com/wan_xyzbca
+ 📸 Instagram : instagram.com/wan_xzyaa
 ═══════════════════════════════
 */
 
