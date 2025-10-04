@@ -17,9 +17,9 @@ const crypto = require('crypto');
 
 // ----------------------------- CONFIG -----------------------------
 const config = {
-  domain: process.env.DOMAIN || '',
-  apikey: process.env.PTLA || process.env.PTLA || 'ptla_egi7NdD8JltL9qBYi7x4dSbSE7XBVAHurtZpnhJ2bWQ',
-  capikey: process.env.PTLC || process.env.PTLC || 'ptlc_H6XJ857ZiLrpVLgElImypbX45jduUXnyKJrOGkeDQdm',
+  domain: process.env.DOMAIN || 'https://oktb.publik-panel.my.id/',
+  apikey: process.env.PTLA || process.env.PTLA || 'ptla_2hz56gQxZgg5kNAAlhWWJEGZeFbgti5ffhjUboEGk8x',
+  capikey: process.env.PTLC || process.env.PTLC || 'ptlc_91y3xCLUFZkTuvKnBru1xvYrsTUl8NNUq95zRG1RESU',
   eggid: process.env.EGGID || '15',
   nestid: process.env.NESTID || '5',
   location: process.env.LOC || '1',
